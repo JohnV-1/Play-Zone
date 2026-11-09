@@ -1,14 +1,17 @@
 .fondo {
     background: linear-gradient(to right, #5C2A80, black);
 }
+
+/*Tamaño de la imagen del carrusel*/
 .carousel-item img {
-  height: 250px;  
-  width: 600px;     
-   /* object-fit: cover;    */
-  object-position: center;  
+    height: 250px;
+    width: 600px;
+    object-position: center;
 }
-/* En tu archivo CSS */
+
+/*Centrar el contenido del carrusel*/
 #carouselExampleInterval {
-  max-width: 800px;    /* Define el ancho máximo del carrusel */
-  margin: 0 auto;      /* Centra el carrusel horizontalmente */
+    max-width: 800px;
+    margin-left: 0;
+    margin-right: auto;
 }
