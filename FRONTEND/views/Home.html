@@ -1,33 +1,170 @@
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
-    <head>
-        <title>Title</title>
-        <!-- Required meta tags -->
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <!-- Bootstrap CSS v5.3.8 -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-            crossorigin="anonymous"
-        />
-    </head>
+<head>
+    <title>Home</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Importacion de estilos -->
+    <link rel="stylesheet" href="../assets/Estilos.css">
+    <!-- Bootstrap CSS v5.3.8 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+</head>
 
-    <body>
-        <header>
-            <!-- place navbar here -->
-        </header>
-        <main></main>
-        <footer>
-            <!-- place footer here -->
-        </footer>
-        <!-- Bootstrap JavaScript Bundle (includes Popper) -->
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-            crossorigin="anonymous"
-        ></script>
-    </body>
+<body class="fondo">
+    <header>
+        <!-- place navbar here -->
+    </header>
+    <main>
+        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="5000">
+                    <img src="https://i.pinimg.com/736x/8d/e0/e9/8de0e9eed740827f5fb94721576adff6.jpg" class="d-block w-100" alt="Primera foto">
+                </div>
+                <div class="carousel-item" data-bs-interval="3000">
+                    <img src="https://i.pinimg.com/736x/3a/6f/a0/3a6fa09409eadfa5d327fc21122f8766.jpg" class="d-block w-100" alt="Segunda foto">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://i.pinimg.com/1200x/8f/63/d5/8f63d576e1c84a55467673c5a8c10227.jpg" class="d-block w-100" alt="Tercera foto">
+                </div>
+            </div>
+            <!-- Controles opcionales -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home.html">
+                    <img src="https://i.pinimg.com/736x/ac/13/74/ac137456b996efec340292a585eb6dc7.jpg" alt="Avatar Logo"
+                        style="width:40px;" class="rounded-pill">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                    <a href="tasks.html"><span class="navbar-text">Tareas</span></a>
+                    <div class="dropdown">
+                        <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown">
+                            Etiquetas
+                        </button>
+                        <!-- Las etiquetas se agregan desde tags_controller.js -->
+                        <ul class="dropdown-menu" id="dropdownList">
+                            <li id="newTagItem">
+                                <button type="button" class="dropdown-item" onclick="newTag()">
+                                    <i class="fas fa-plus" style="font-size:14px"></i> Nueva etiqueta
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <form class="d-flex ms-auto">
+                        <input type="search" class="form-control me-2" placeholder="Buscar">
+                        <button type="button" class="btn btn-outline-success">Buscar</button>
+                    </form>
+
+                    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#myModal"
+                        title="Cerrar Sesión">
+                        <i class="fas fa-sign-out-alt" style="font-size:24px;color:white;"></i>
+                    </button>
+                    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalEdit"
+                        title="Editar usuario">
+                        <i class="fas fa-gear" style="font-size:24px;color:white;"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eligendi ducimus quaerat accusantium, neque sunt
+            totam optio in quas deleniti repellendus ipsum sapiente consequuntur, quae necessitatibus corrupti
+            recusandae non nisi voluptatem earum sequi. Amet soluta nemo hic, corrupti quod consequuntur iste, nobis
+            similique illum neque repudiandae veritatis, doloribus ut debitis modi quia consectetur quisquam? Cupiditate
+            dolore molestias consequuntur! Praesentium libero minus sint in voluptatibus deserunt ratione doloribus
+            aspernatur, numquam blanditiis quaerat tempore, ullam eaque eum molestias neque quis, odit eos rem eligendi
+            magni. In atque, distinctio aliquam architecto aspernatur eius sunt cupiditate eos quam commodi esse quia
+            modi nisi mollitia ipsa, corporis dolore necessitatibus ab optio temporibus laboriosam iusto maiores
+            excepturi placeat. Nulla ratione eligendi quae fuga at, id consectetur facilis iste praesentium veritatis
+            beatae enim doloribus perferendis quam eveniet odit est rerum voluptatibus iure dolores et? Numquam
+            provident dolores saepe libero, dolorum vel blanditiis dolore optio sint exercitationem accusamus aliquam et
+            suscipit id repudiandae autem ex. Incidunt culpa maxime nesciunt, cumque voluptatem asperiores ad ratione
+            velit sapiente voluptate. Iste, nemo? Voluptatum ad quis vitae numquam ipsam voluptates illum adipisci
+            mollitia, unde earum tempore dignissimos impedit esse harum veniam, vero consequatur minus. Quaerat, vitae
+            harum! Cumque aliquid, reprehenderit sapiente natus, aperiam accusantium autem minus laborum impedit dolores
+            error molestiae! Natus illo eum eligendi, explicabo aliquam consequuntur aliquid harum provident, ad nulla
+            vel dolorem maiores voluptatum, maxime ab deserunt eos dolor quae quidem similique velit laudantium laborum
+            cumque necessitatibus? Ducimus facilis earum, quaerat possimus blanditiis, perspiciatis in, a quo repellat
+            animi at quasi unde modi cumque explicabo deleniti adipisci eius aliquam alias laudantium minus autem quos
+            optio? Perferendis libero porro tenetur voluptates. Non quis vitae quia sint veritatis ea in culpa maiores,
+            incidunt voluptas soluta ab saepe libero quo excepturi nisi praesentium cumque temporibus nostrum fuga
+            veniam, nihil magnam repellendus qui. Perspiciatis et, aspernatur accusantium est repudiandae possimus
+            consequuntur, neque nostrum dicta quae iusto eius doloribus, blanditiis eum at. Repellat sed similique iure
+            adipisci delectus ex cupiditate reprehenderit accusantium nostrum libero! Consectetur impedit non
+            consequuntur necessitatibus, veritatis minima tempora laudantium. Sapiente dolorem minus eaque laboriosam,
+            recusandae consequatur error quasi ipsa corporis iure dolore. Molestias eius, at facere veniam incidunt
+            neque nihil dolorum dolores quae repellendus quasi earum cum ipsam dolorem totam delectus dignissimos
+            temporibus eveniet laboriosam et! Voluptate veritatis iure, nihil harum impedit fugiat soluta earum! Cum
+            nulla, eum possimus consectetur quo natus mollitia soluta? Quas pariatur quaerat vitae quam, sit aperiam
+            quia accusamus, recusandae architecto aspernatur qui impedit eligendi, perferendis dolore delectus nostrum
+            expedita atque ea? Quasi esse vel itaque dolores. Numquam esse molestiae temporibus consectetur, in
+            consequuntur qui quaerat dolorum ipsum optio maxime praesentium maiores autem, alias suscipit tempora fugiat
+            omnis. Cupiditate sunt dolorum alias in officiis minima ea, delectus non quos placeat. Laboriosam maiores in
+            illum accusantium optio temporibus suscipit, necessitatibus accusamus porro sapiente nesciunt facere illo
+            eligendi voluptatum sint fugiat, perferendis recusandae nulla voluptatibus delectus nemo? Perferendis
+            sapiente accusamus at, ex iure distinctio soluta doloribus reprehenderit tenetur ad sunt laudantium nobis
+            cupiditate excepturi debitis dolorum dolores quis aspernatur! </p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero possimus quidem repellendus distinctio.
+            Inventore at quo saepe facere distinctio laudantium veritatis nulla modi, voluptates voluptatibus molestiae
+            itaque ullam culpa neque minus quibusdam amet commodi assumenda ex sed est. Laborum ipsam commodi natus
+            labore aut repudiandae accusamus corporis, est nemo voluptas necessitatibus suscipit adipisci temporibus
+            ipsum quod voluptatibus facere deserunt doloribus officia fugiat totam aliquid nesciunt. Odit alias maiores
+            laborum laboriosam eos aspernatur vel necessitatibus itaque perferendis veniam. Vel assumenda ipsam beatae
+            ex nam laboriosam? Unde dolorem repudiandae odio, aliquam molestias non impedit officia, consectetur
+            cupiditate, tempora est labore quod! Consequuntur labore ex est? Explicabo est iste odio incidunt
+            reprehenderit culpa provident, consequuntur delectus inventore. Blanditiis ab excepturi libero earum maiores
+            dolorem nihil, officia labore deleniti laborum magnam rerum maxime eveniet id aperiam ullam modi, error
+            consequatur odit non cupiditate, asperiores alias. Id reiciendis libero quos voluptas suscipit! Pariatur
+            beatae, necessitatibus aspernatur similique qui esse nihil, dignissimos adipisci officia sint possimus enim
+            dolores, sed dolorem veritatis. Magnam consequuntur optio, reprehenderit dolore nisi, labore odio aut porro
+            sapiente omnis, perspiciatis repellendus aperiam. Impedit, sint. Minima veritatis dolor nulla fuga animi
+            minus voluptas vero facere eos temporibus quos ullam, quas architecto quis delectus pariatur, officia velit
+            sequi repudiandae. Fugiat doloribus ratione ab ipsum quas! Voluptate laborum repudiandae inventore, enim
+            assumenda unde aut nam consequuntur odio saepe ipsum eos modi itaque veritatis, eius nesciunt, tempora sed.
+            Dicta eligendi labore libero sapiente tempora ex delectus, eaque accusantium illum doloremque quos a
+            molestias. Itaque laborum, ipsam reprehenderit quaerat voluptate hic earum modi culpa, perspiciatis nam
+            tenetur. Tenetur iure eveniet odit? Porro in reiciendis quae qui, quos consequatur quasi cumque accusantium
+            consequuntur veniam ratione dolorum aspernatur non ducimus soluta voluptatem corporis voluptates at
+            praesentium illo assumenda architecto placeat numquam. Pariatur reiciendis distinctio ducimus aliquid ipsam
+            alias illo deserunt! Voluptates tempora ducimus illo ut tenetur accusamus porro sapiente dolorem saepe
+            similique, quisquam doloribus unde fugiat explicabo ab ratione natus voluptate, omnis, temporibus quas cum
+            nam dolorum sed. Inventore nihil dolor ducimus quis, culpa impedit vitae distinctio neque, corrupti quia
+            labore, voluptates earum facere similique illum unde! Nesciunt obcaecati a fuga deserunt commodi fugit
+            eveniet nobis harum iusto quisquam amet necessitatibus ipsum quas, alias, neque error ad eos, consectetur
+            voluptas? Iure qui quibusdam mollitia sapiente illum tempora nisi atque cumque soluta, nulla consequatur
+            suscipit accusamus explicabo asperiores assumenda similique facilis est laborum dignissimos earum sed
+            deleniti quod? Laborum doloremque eligendi quas rerum doloribus iusto corrupti quisquam voluptate tenetur
+            non? Odio libero mollitia recusandae non, minus velit, delectus facere illum ipsa unde nisi est molestiae
+            rerum optio impedit veritatis pariatur minima voluptatibus. Nulla, vel necessitatibus iste reiciendis vero
+            voluptatum officiis laudantium quaerat? Sequi esse sapiente placeat voluptatem error iusto, perspiciatis
+            mollitia, quas odio temporibus maiores soluta nam quos labore quasi est, accusantium corporis iure dolorum
+            corrupti incidunt. Vitae, sed. Doloribus ab, vitae illo suscipit quia maiores. Possimus deleniti ut unde
+            cumque, ratione saepe culpa, amet illum accusantium quae eum enim quisquam architecto earum nulla
+            exercitationem quos facere fuga? Aperiam, accusantium.</p>
+    </main>
+    <footer>
+        <!-- place footer here -->
+    </footer>
+    <!-- Bootstrap JavaScript Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>
