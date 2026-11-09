@@ -2,7 +2,13 @@
     background: linear-gradient(to right, #5C2A80, black);
 }
 .carousel-item img {
-  height: 250px;       
-  object-fit: cover;   
-  object-position: center; 
+  height: 250px;  
+  width: 600px;     
+   /* object-fit: cover;    */
+  object-position: center;  
+}
+/* En tu archivo CSS */
+#carouselExampleInterval {
+  max-width: 800px;    /* Define el ancho máximo del carrusel */
+  margin: 0 auto;      /* Centra el carrusel horizontalmente */
 }
