@@ -1,5 +1,8 @@
 .fondo {
-    background: linear-gradient(to right, #5C2A80, black);
+    background: linear-gradient(to right, black, #1106a7);
+
+    /* background: linear-gradient(to right, #283651, black); */
+    /*5C2A80*/
 }
 
 /*Tamaño de la imagen del carrusel*/
@@ -14,4 +17,15 @@
     max-width: 800px;
     margin-left: 0;
     margin-right: auto;
+}
+.Titulo{
+    font-size: 52px;
+    font-family: Poppins, sans-serif;
+}
+.Resaltado{
+    color: #784af2;
+}
+.subTitulo{
+    font-size: 20px;
+    font-family: Poppins, sans-serif;
 }
