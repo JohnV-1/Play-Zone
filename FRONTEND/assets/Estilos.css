@@ -32,3 +32,167 @@
 .icono{
     margin-right: 10px;
 }
+
+
+/* =========================
+   ESTILOS GENERALES
+========================= */
+
+body {
+    color: white;
+    background: #050B1A;
+}
+
+.btn {
+    color: #9361ff;
+    border-color: #9361ff;
+}
+
+/* =========================
+   HERO / PORTADA
+========================= */
+
+.hero {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 22px 35px;
+    border: 1px solid #35466c;
+    border-radius: 12px;
+
+    background-image:
+        linear-gradient(
+            to right,
+            #050d20 0%,
+            #050d20 25%,
+            rgba(5, 13, 32, 0.95) 40%,
+            rgba(5, 13, 32, 0.35) 65%,
+            rgba(5, 13, 32, 0) 100%
+        ),
+        url('https://eltucotu.com/wp-content/uploads/2021/03/Aliens-Spaces-Invaders.jpg');
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* PANELES */
+
+.panel {
+    padding: 1.4rem;
+    border: 1px solid #7169a522;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #1b1d33, #17192b);
+    box-shadow: 0 10px 30px #05061122;
+}
+
+.content-panel {
+    background: rgba(5, 14, 31, .95);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 17px;
+    height: 100%;
+}
+
+/* PORTADAS DE JUEGOS */
+
+.game-cover {
+    width: 100%;
+    aspect-ratio: 1 / 0.8;
+    position: relative;
+    overflow: hidden;
+    border-radius: 11px;
+    background: #292c4a;
+}
+
+.game-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.game-cover-title {
+    position: absolute;
+    z-index: 1;
+    right: .5rem;
+    bottom: .75rem;
+    left: .65rem;
+    color: white;
+    font-size: .8rem;
+    font-weight: 800;
+}
+
+/* BOTONES DE JUEGOS */
+
+.btn-fav,
+.btn-play {
+    position: absolute;
+    z-index: 2;
+    border: none;
+    border-radius: 20px;
+    padding: 0.2rem 0.65rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    justify-content: center;
+}
+
+.btn-fav {
+    top: .5rem;
+    right: .5rem;
+    background: #050B1A;
+    color: #9361ff;
+}
+
+.btn-play {
+    bottom: .5rem;
+    right: .5rem;
+    background: #050B1A;
+    color: white;
+}
+
+/* TABLAS */
+
+.table {
+    color: var(--text);
+    margin-top: 12px;
+    border-color: #1d2c47;
+    vertical-align: middle;
+    --bs-table-bg: rgba(5, 14, 31, .95);
+    --bs-table-color: white;
+    --bs-table-border-color: #263958;
+    text-align: center;
+}
+
+.table tbody tr.current-player td {
+    background: #1c1241;
+    border-top: 2px solid #7425ff;
+    border-bottom: 2px solid #7425ff;
+}
+
+/* PANEL DE RESULTADOS */
+
+.store-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.score-number {
+    color: #9361ff;
+    font-size: 54px;
+    line-height: 1.2;
+    font-weight: bold;
+}
+
+.score-position {
+    color: #a6b1cd;
+    font-size: 19px;
+    margin-top: 5px;
+}
+
+.score-panel .btn-purple {
+    width: 100%;
+    margin-top: auto;
+}
