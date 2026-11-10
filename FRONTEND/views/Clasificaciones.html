@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="light">
     <head>
-        <title>Clasificaciones</title>
+        <title>Clasificación</title>
         <!-- Required meta tags -->
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -13,15 +13,263 @@
             integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
             crossorigin="anonymous"
         />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     </head>
+
+    <style>
+        body {color: white; background: #050B1A;}
+        .btn {color: #9361ff; border-color: #9361ff;}
+        .hero {
+            display:flex;
+            align-items:center;
+            gap:2.5rem;
+            padding: 22px 35px;
+            border: 1px solid #35466c;
+            border-radius: 12px;
+            background-image:
+            linear-gradient(
+                to right,
+                #050d20 0%,
+                #050d20 25%,
+                rgba(5, 13, 32, 0.95) 40%,
+                rgba(5, 13, 32, 0.35) 65%,
+                rgba(5, 13, 32, 0) 100%
+            ),
+            url("https://eloutput.com/wp-content/uploads/2021/03/Aliens-Spaces-Invaders.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .content-panel {
+            background: rgba(5, 14, 31, .95);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 17px;
+            height: 100%;
+        }
+
+        .table {
+            color: var(--text);
+            margin-top: 12px;
+            border-color: #1d2c47;
+            vertical-align: middle;
+            --bs-table-bg: rgba(5, 14, 31, .95);
+            --bs-table-color: white;
+            --bs-table-border-color: #263958;
+            text-align: center;
+        }
+        .table tbody tr.current-player td {
+            background: #1c1241;
+            border-top: 2px solid #7425ff;
+            border-bottom: 2px solid #7425ff;
+        }
+        .score-panel {
+            display: flex;
+            flex-direction: column;
+        }
+        .score-number {
+            color: #9361ff;
+            font-size: 54px;
+            line-height: 1.2;
+            font-weight: bold;
+        }
+        .score-position {
+            color: #a6b1cd;
+            font-size: 19px;
+            margin-top: 5px;
+        }
+        .score-panel .btn-purple {
+            width: 100%;
+            margin-top: auto;
+        }
+    </style>
 
     <body>
         <header>
-            <!-- place navbar here -->
+            <nav
+                class="navbar navbar-expand-sm navbar-dark"
+            >
+                <div class="container-fluid px-lg-5">
+                    
+                    <a class="navbar-brand" href="#">
+                        <i class="bi bi-controller me-2"></i>Playzone
+                    </a>
+                    <button
+                        class="navbar-toggler d-lg-none"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapsibleNavId"
+                        aria-controls="collapsibleNavId"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="collapsibleNavId">
+                        <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Inicio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Juegos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">Puntajes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Perfil</a>
+                            </li>
+                        </ul>
+                        <form class="d-flex my-3 my-lg-2">
+                            <input
+                                class="form-control me-sm-2"
+                                type="text"
+                                placeholder="Buscar"
+                            />
+                            <button
+                                class="btn btn-outline-success my-2 my-sm-0"
+                                type="submit"
+                            >
+                            <i class="bi bi-search"></i>    
+                            </button>
+                        </form>
+                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5">
+                    </div>
+                </div>
+            </nav>
         </header>
+
         <main>
-            <h1>Clasificaciones</h1>
+            <section class="hero mx-5 mt-2">
+                <div class="hero-content">
+                    <h1>Clasificación</h1>
+                    <h2 style="color: #9361ff;">Space Invaders</h2>
+
+                    <p>Supera tu récord y sube de posición.</p>
+
+                    <a href="#" class="btn btn-purple">
+                        Jugar ahora
+                        <i class="bi bi-chevron-right ms-2"></i>
+                    </a>
+                </div>
+            </section>
+
+            <div class="row g-3 mx-5 mt-2">
+                <div class="col-lg-9">
+                    <section class="content-panel">
+                        <div>
+                            <table class="table" id="rankingTable">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Posición</th>
+                                        <th colspan="2">Jugador</th>
+                                        <th>Puntuación</th>
+                                        <th>Fecha</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="rankingBody">
+
+                                    <tr>
+                                        <td><span>1</span></td>
+                                        <td><div class="player-avatar"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5"></div></td>
+                                        <td>Nova</td>
+                                        <td><strong>28 450</strong></td>
+                                        <td>26 oct 2026</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><span>2</span></td>
+                                        <td><div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5"></div></td>
+                                        <td>PixelKing</td>
+                                        <td><strong>25 900</strong></td>
+                                        <td>25 oct 2026</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><span>3</span></td>
+                                        <td><div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5"></div></td>
+                                        <td>Luna</td>
+                                        <td><strong>23 680</strong></td>
+                                        <td>25 oct 2026</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>4</td>
+                                        <td><div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5"></div></td>
+                                        <td>RetroMax</td>
+                                        <td><strong>21 750</strong></td>
+                                        <td>24 oct 2026</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>5</td>
+                                        <td><div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5"></div></td>
+                                        <td>Astro</td>
+                                        <td><strong>19 420</strong></td>
+                                        <td>24 oct 2026</td>
+                                    </tr>
+
+                                    <tr class="current-player">
+                                        <td>6</td>
+                                        <td><div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5"></div></td>
+                                        <td>David</td>
+                                        <td><strong>18 650</strong></td>
+                                        <td>26 oct 2026</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>7</td>
+                                        <td><div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5"></div></td>
+                                        <td>Vega</td>
+                                        <td><strong>17 800</strong></td>
+                                        <td>23 oct 2026</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>8</td>
+                                        <td><div><img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5"></div></td>
+                                        <td>Neo</td>
+                                        <td><strong>16 340</strong></td>
+                                        <td>23 oct 2026</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+                <div class="col-lg-3">
+
+                    <aside class="content-panel score-panel">
+
+                        <h3>Tu mejor puntuación</h3>
+
+                        <div class="score-number">18 650</div>
+
+                        <div class="score-position">
+                            Posición <strong>#6</strong>
+                        </div>
+
+                        <div class="card mt-5">
+                        <img src="https://www.lanacion.com.ar/resizer/v2/la-tematica-invasores-extraterrestes-estaba-muy-WID5UGOS7JGF3FSAQPSN4M7I7M.jpg?auth=3fa8a847ab03a305623979766c2a74f8a81440507630fb1c4de76ee228f60470&width=1200&height=1200&quality=70&smart=true">
+                        </div>
+
+                        <a href="#" class="btn btn-purple">
+                            Volver a jugar
+                            <i class="bi bi-chevron-right ms-2"></i>
+                        </a>
+
+                    </aside>
+
+                </div>
+            </div>
         </main>
+
         <footer>
             <!-- place footer here -->
         </footer>
