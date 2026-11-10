@@ -14,7 +14,7 @@
 
 /*Centrar el contenido del carrusel*/
 #carouselExampleInterval {
-    max-width: 800px;
+    max-width: 1000px;
     margin-left: 0;
     margin-right: auto;
 }
@@ -28,4 +28,7 @@
 .subTitulo{
     font-size: 20px;
     font-family: Poppins, sans-serif;
+}
+.icono{
+    margin-right: 10px;
 }
