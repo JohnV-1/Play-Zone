@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="light">
     <head>
         <title>Perfil</title>
         <!-- Required meta tags -->
@@ -13,14 +13,164 @@
             integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
             crossorigin="anonymous"
         />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     </head>
+
+    <style>
+        body {color: white; background: #050B1A;}
+        .btn {color: #9361ff; border-color: #9361ff;}
+        .hero {display:flex;align-items:center;gap:2.5rem;padding:55px;}
+        .panel {
+            padding:1.4rem; 
+            border:1px solid #7169a522;
+            border-radius:16px;
+            background:linear-gradient(145deg,#1b1d33,#17192b);
+            box-shadow:0 10px 30px #05061122
+        }
+        .game-cover{width:100%;aspect-ratio:1/0.8;position:relative;overflow:hidden;border-radius:11px;background:#292c4a;}
+        .game-cover img{width:100%;height:100%;object-fit:cover}
+        .game-cover-title{position:absolute;z-index:1;right:5.2rem;bottom:.75rem;left:.65rem;color:white;font-size:.8rem;font-weight:800;}
+        .btn-fav, .btn-play {
+            position: absolute;
+            z-index: 2;
+            border: none; 
+            border-radius: 20px;
+            padding: 0.2rem 0.65rem; 
+            width: 32px; 
+            height: 32px;
+            display: flex; 
+            align-items: center; 
+            gap:0.2rem;
+            justify-content: center;
+        }
+        .btn-fav {top: .5rem; right: .5rem; background: #050B1A;color: #9361ff;}
+        .btn-play {bottom: .5rem; right: .5rem; background: #050B1A; color: white;}
+        
+    </style>
 
     <body>
         <header>
-            <!-- place navbar here -->
+            <nav
+                class="navbar navbar-expand-sm navbar-dark"
+            >
+                <div class="container-fluid px-lg-5">
+                    
+                    <a class="navbar-brand" href="#">
+                        <i class="bi bi-controller me-2"></i>Playzone
+                    </a>
+                    <button
+                        class="navbar-toggler d-lg-none"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapsibleNavId"
+                        aria-controls="collapsibleNavId"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="collapsibleNavId">
+                        <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Inicio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Juegos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Puntajes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">Perfil</a>
+                            </li>
+                        </ul>
+                        <form class="d-flex my-3 my-lg-2">
+                            <input
+                                class="form-control me-sm-2"
+                                type="text"
+                                placeholder="Buscar"
+                            />
+                            <button
+                                class="btn btn-outline-success my-2 my-sm-0"
+                                type="submit"
+                            >
+                            <i class="bi bi-search"></i>    
+                            </button>
+                        </form>
+                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="50" height="50" class="rounded-pill me-3 ms-5">
+                    </div>
+                </div>
+            </nav>
         </header>
-        <main>
-            <h1>Perfil</h1>
+
+
+        <main class="">
+            <section class="container-fluid hero" style="background: url(https://images5.alphacoders.com/548/thumb-1920-548279.jpg) center/cover">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Usuario" width="150" height="150" class="rounded-pill me-2">
+                <div>
+                    <h1>Nombre de usuario</h1>
+                    <p>Descripción</p>
+                    <button class="btn" style="background: #050B1A;"><i class="bi bi-pencil-fill me-2"></i>Editar perfil</button>  
+                </div>
+            </section>
+
+            <section class="panel mx-4 mt-4">
+                <div>
+                    <h2>Favoritos</h2>
+                </div>
+                <div class="row row-cols-2 row-cols-sm-4 g-3 g-lg-4">
+                    <div class="col">
+                        <div class="game-cover">
+                            <img src="https://play-lh.googleusercontent.com/fMufsvMiYqPvZw3ghNCoSPRbP0wgCWfFZ9zAVjyP2K441gscEokUqvm-9vxOOYph0iCpQsIFhcjzLuDOlBD5lQ">
+                            <button type="button" class="btn-fav">
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                            <span class="game-cover-title">Space Invaders</span>
+                            <a href="#" class="btn-play">
+                                <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="game-cover">
+                            <img src="https://play-lh.googleusercontent.com/P9F2bY44imEYcGyA4a6FsaJbt3JFUaL0LQwSmW8fih-3wKGLk1MFV5wK1KqAs3BrHm8eRo6H1u94JH1YPon8">
+                            <button type="button" class="btn-fav">
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                            <span class="game-cover-title">2048</span>
+                            <a href="#" class="btn-play">
+                                <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="game-cover">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMmZkMjMwYWYtYWU0YS00MjEyLWJhZGMtNDgzZThkN2M1NDdiXkEyXkFqcGc@._V1_.jpg">
+                            <button type="button" class="btn-fav">
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                            <span class="game-cover-title">The Legend of Zelda</span>
+                            <a href="#" class="btn-play">
+                                <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="game-cover">
+                            <img src="https://image.api.playstation.com/vulcan/ap/rnd/202012/1013/DKYIpVhskEQ4jbzr1PVxsO0Z.png">
+                            <button type="button" class="btn-fav">
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                            <span class="game-cover-title">Star Wars</span>
+                            <a href="#" class="btn-play">
+                                <i class="bi bi-play-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            
         </main>
         <footer>
             <!-- place footer here -->
