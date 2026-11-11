@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="es" data-bs-theme="dark">
+
+<head>
+    <title>Mini Game Web</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS v5.3.8 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+
+    <style>
+        body {
+            background-color: #202124;
+            color: #f1f1f1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        main {
+            flex: 1;                     /* ocupa el espacio que deja el navbar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        #contenedor {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* ---------- Marcador ---------- */
+        #marcador {
+            display: flex;
+            justify-content: flex-end;
+            gap: 24px;
+            font-family: monospace;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        #record {
+            color: #9aa0a6;
+        }
+
+        /* Parpadeo del puntaje cada 100 puntos (animación CSS con @keyframes) */
+        .parpadeo {
+            animation: parpadeo 0.25s steps(1) 4;
+        }
+
+        @keyframes parpadeo {
+            50% {
+                visibility: hidden;
+            }
+        }
+
+        /* ---------- Escenario ---------- */
+        #juego {
+            position: relative;          /* los hijos "absolute" se posicionan respecto a esto */
+            width: 100%;
+            height: 300px;
+            overflow: hidden;            /* lo que sale del escenario no se ve */
+            border-radius: 8px;
+            background-image: url("https://i.pinimg.com/1200x/05/3c/e7/053ce7904a14c3034503a792dd39d478.jpg");
+            background-size: auto 100%;
+            background-repeat: repeat-x; /* se repite a lo ancho para poder moverlo (parallax) */
+        }
+
+        /* La línea del suelo: un patrón repetido que movemos con JS */
+        #suelo {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 20px;
+            background-color: rgba(0, 0, 0, 0.55);
+            background-image: repeating-linear-gradient(90deg, #f1f1f1 0 12px, transparent 12px 40px);
+            background-size: 40px 2px;
+            background-repeat: repeat-x;
+        }
+
+        /* Jugador y enemigo: su posición la controla el JavaScript */
+        #main,
+        #enemie {
+            position: absolute;
+            bottom: 20px;                /* encima del suelo */
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        #main {
+            left: 50px;
+        }
+
+        #enemie {
+            left: 100%;                  /* empieza fuera de la pantalla, a la derecha */
+        }
+
+        /* Animación CSS de "correr": un pequeño rebote mientras está en el piso */
+        #main.corriendo {
+            animation: correr 0.3s ease-in-out infinite;
+        }
+
+        @keyframes correr {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-4px); }
+        }
+
+        /* ---------- Pantalla de inicio / Game Over ---------- */
+        #mensaje {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.45);
+            padding: 16px;
+        }
+
+        #mensaje.oculto {
+            display: none;
+        }
+
+        #titulo {
+            font-family: monospace;
+            letter-spacing: 4px;
+        }
+
+        #botones {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        #botones .btn {
+            min-width: 120px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="Home.html">Play Zone</a>
+                <a href="Home.html" class="text-white text-decoration-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+                        class="bi bi-controller icono" viewBox="0 0 16 16">
+                        <path
+                            d="M11.5 6.027a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1m2.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1m-6.5-3h1v1h1v1h-1v1h-1v-1h-1v-1h1z" />
+                        <path
+                            d="M3.051 3.26a.5.5 0 0 1 .354-.613l1.932-.518a.5.5 0 0 1 .62.39c.655-.079 1.35-.117 2.043-.117.72 0 1.443.041 2.12.126a.5.5 0 0 1 .622-.399l1.932.518a.5.5 0 0 1 .306.729q.211.136.373.297c.408.408.78 1.05 1.095 1.772.32.733.599 1.591.805 2.466s.34 1.78.364 2.606c.024.816-.059 1.602-.328 2.21a1.42 1.42 0 0 1-1.445.83c-.636-.067-1.115-.394-1.513-.773-.245-.232-.496-.526-.739-.808-.126-.148-.25-.292-.368-.423-.728-.804-1.597-1.527-3.224-1.527s-2.496.723-3.224 1.527c-.119.131-.242.275-.368.423-.243.282-.494.575-.739.808-.398.38-.877.706-1.513.773a1.42 1.42 0 0 1-1.445-.83c-.27-.608-.352-1.395-.329-2.21.024-.826.16-1.73.365-2.606.206-.875.486-1.733.805-2.466.315-.722.687-1.364 1.094-1.772a2.3 2.3 0 0 1 .433-.335l-.028-.079zm2.036.412c-.877.185-1.469.443-1.733.708-.276.276-.587.783-.885 1.465a14 14 0 0 0-.748 2.295 12.4 12.4 0 0 0-.339 2.406c-.022.755.062 1.368.243 1.776a.42.42 0 0 0 .426.24c.327-.034.61-.199.929-.502.212-.202.4-.423.615-.674.133-.156.276-.323.44-.504C4.861 9.969 5.978 9.027 8 9.027s3.139.942 3.965 1.855c.164.181.307.348.44.504.214.251.403.472.615.674.318.303.601.468.929.503a.42.42 0 0 0 .426-.241c.18-.408.265-1.02.243-1.776a12.4 12.4 0 0 0-.339-2.406 14 14 0 0 0-.748-2.295c-.298-.682-.61-1.19-.885-1.465-.264-.265-.856-.523-1.733-.708-.85-.179-1.877-.27-2.913-.27s-2.063.091-2.913.27" />
+                    </svg>
+                </a>
+                <div class="d-flex ms-auto">
+                    <!-- En caso de poner un buscador aqui lo podemos poner -->
+                </div>
+                <a class="nav-link" href="Clasificaciones.html">Clasificaciones
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                        class="bi bi-bar-chart-line" viewBox="0 0 16 16"
+                        style="margin-bottom: 10px; margin-right: 20px;">
+                        <path
+                            d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-5 0v-3H2v3z" />
+                    </svg>
+                </a>
+                <a class="nav-link" href="Perfil.html">
+                    Perfil
+                    <img src="https://i.pinimg.com/736x/ac/13/74/ac137456b996efec340292a585eb6dc7.jpg" alt="Avatar Logo"
+                        style="width:40px; margin-right: 20px; margin-left: 5px;" class="rounded-pill">
+                </a>
+                <button type="button" class="btn" onClick="window.location.href='Login.html'" title="Cerrar Sesión">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+                        class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+                        <path fill-rule="evenodd"
+                            d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div id="contenedor">
+            <!-- Marcador -->
+            <div id="marcador">
+                <span>HI <strong id="record">00000</strong></span>
+                <span><strong id="puntaje">00000</strong></span>
+            </div>
+
+            <!-- Escenario: todo lo que se mueve vive aquí dentro -->
+            <div id="juego">
+                <img id="main" src="https://static.vecteezy.com/system/resources/previews/027/517/539/non_2x/pixel-art-walking-burmese-cat-character-png.png" alt="Jugador">
+                <img id="enemie" src="https://cdn-icons-png.flaticon.com/512/1685/1685445.png" alt="Enemigo">
+                <div id="suelo"></div>
+
+                <!-- Pantalla de inicio y de Game Over -->
+                <div id="mensaje">
+                    <h2 id="titulo">MINI GAME</h2>
+                    <p id="instrucciones">Salta con <kbd>Espacio</kbd>, <kbd>W</kbd>, <kbd>↑</kbd> o tocando la pantalla</p>
+                    <div id="botones">
+                        <button id="boton" type="button" class="btn btn-success">PLAY</button>
+                        <a href="Home.html" class="btn btn-primary">Inicio</a>
+                        <a href="Clasificaciones.html" class="btn btn-warning">Clasificaciones</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // =====================================================================
+        //  MINI GAME WEB - estilo "dinosaurio de Google"
+        //  Idea general:
+        //    1. Guardamos el ESTADO del juego en variables (posición, velocidad...).
+        //    2. Un GAME LOOP (requestAnimationFrame) se ejecuta ~60 veces por segundo:
+        //         - actualizar(): cambia el estado según el tiempo que pasó
+        //         - dibujar():    pasa ese estado a la pantalla (estilos CSS)
+        //    3. El teclado / clic solo cambia el estado (ej. "empieza a saltar").
+        // =====================================================================
+
+        // ---------- Elementos del HTML ----------
+        const juego     = document.getElementById("juego");
+        const jugador   = document.getElementById("main");
+        const enemigo   = document.getElementById("enemie");
+        const suelo     = document.getElementById("suelo");
+        const mensaje   = document.getElementById("mensaje");
+        const titulo    = document.getElementById("titulo");
+        const boton     = document.getElementById("boton");
+        const puntajeEl = document.getElementById("puntaje");
+        const recordEl  = document.getElementById("record");
+
+        // ---------- Constantes (juega con estos números) ----------
+        const GRAVEDAD          = 2400; // px/s²  -> qué tan rápido cae
+        const FUERZA_SALTO      = 800;  // px/s   -> qué tan alto salta
+        const VELOCIDAD_INICIAL = 350;  // px/s   -> velocidad del enemigo al empezar
+        const VELOCIDAD_MAXIMA  = 900;
+        const ACELERACION       = 10;   // px/s que se suman cada segundo
+        const MARGEN_CHOQUE     = 10;   // px que perdonamos en los choques (las imágenes tienen bordes)
+
+        // ---------- Estado del juego ----------
+        let jugando = false;
+        let alturaJugador = 0;   // 0 = en el suelo
+        let velocidadY = 0;      // velocidad vertical del jugador
+        let enemigoX = 0;        // posición horizontal del enemigo (px desde la izquierda)
+        let velocidad = VELOCIDAD_INICIAL;
+        let puntaje = 0;
+        let record = Number(leerRecord()) || 0;
+        let desplazamientoFondo = 0;
+        let tiempoAnterior = 0;
+
+        mostrarRecord();
+
+        // ---------- Controles ----------
+        document.addEventListener("keydown", (evento) => {
+            if (evento.code === "Space" || evento.key === "ArrowUp" || evento.key.toLowerCase() === "w") {
+                evento.preventDefault();          // que la barra espaciadora no haga scroll
+                if (jugando) saltar();
+                else iniciar();
+            }
+        });
+
+        // Tocar / hacer clic en el escenario también salta (útil en el celular)
+        juego.addEventListener("pointerdown", () => {
+            if (jugando) saltar();
+        });
+
+        boton.addEventListener("click", iniciar);
+
+        // ---------- Funciones del juego ----------
+        function iniciar() {
+            jugando = true;
+            alturaJugador = 0;
+            velocidadY = 0;
+            velocidad = VELOCIDAD_INICIAL;
+            puntaje = 0;
+            enemigoX = juego.clientWidth + 50;   // empieza fuera de la pantalla
+            mensaje.classList.add("oculto");
+            jugador.classList.add("corriendo");
+
+            tiempoAnterior = performance.now();
+            requestAnimationFrame(cicloDeJuego);
+        }
+
+        function saltar() {
+            // Solo se puede saltar si está tocando el suelo
+            if (alturaJugador === 0) {
+                velocidadY = FUERZA_SALTO;
+                jugador.classList.remove("corriendo");
+            }
+        }
+
+        function terminar() {
+            jugando = false;
+            jugador.classList.remove("corriendo");
+            if (puntaje > record) {
+                record = Math.floor(puntaje);
+                guardarRecord(record);
+                mostrarRecord();
+            }
+            // Al perder se muestran 3 botones: Reintentar, Inicio y Clasificaciones
+            titulo.textContent = "GAME OVER";
+            boton.textContent = "Reintentar";
+            mensaje.classList.remove("oculto");
+        }
+
+        // ---------- GAME LOOP ----------
+        function cicloDeJuego(tiempoActual) {
+            if (!jugando) return;
+
+            // dt = segundos desde el cuadro anterior. Multiplicar todo por dt hace que
+            // el juego vaya a la misma velocidad en una pantalla de 60Hz o de 144Hz.
+            const dt = Math.min((tiempoActual - tiempoAnterior) / 1000, 0.05);
+            tiempoAnterior = tiempoActual;
+
+            actualizar(dt);
+            dibujar();
+
+            if (hayChoque()) {
+                terminar();
+                return;
+            }
+
+            requestAnimationFrame(cicloDeJuego);   // pide el siguiente cuadro
+        }
+
+        function actualizar(dt) {
+            // 1) Física del salto: la gravedad le resta velocidad, la velocidad cambia la altura
+            if (alturaJugador > 0 || velocidadY > 0) {
+                velocidadY -= GRAVEDAD * dt;
+                alturaJugador += velocidadY * dt;
+                if (alturaJugador <= 0) {          // tocó el suelo
+                    alturaJugador = 0;
+                    velocidadY = 0;
+                    jugador.classList.add("corriendo");
+                }
+            }
+
+            // 2) El enemigo se mueve a la izquierda; cuando sale, reaparece a la derecha
+            enemigoX -= velocidad * dt;
+            if (enemigoX < -enemigo.offsetWidth) {
+                // Distancia aleatoria para que no sea siempre igual
+                enemigoX = juego.clientWidth + Math.random() * 300;
+            }
+
+            // 3) El fondo y el suelo se mueven (el fondo más lento = efecto parallax)
+            desplazamientoFondo += velocidad * dt;
+
+            // 4) Dificultad: cada vez más rápido
+            velocidad = Math.min(velocidad + ACELERACION * dt, VELOCIDAD_MAXIMA);
+
+            // 5) Puntaje: sube con el tiempo (y más rápido cuanto más veloz vas)
+            const puntajeAntes = Math.floor(puntaje);
+            puntaje += dt * 10 * (velocidad / VELOCIDAD_INICIAL);
+            const puntajeAhora = Math.floor(puntaje);
+
+            // Cada 100 puntos el marcador parpadea (como en el juego del dinosaurio)
+            if (Math.floor(puntajeAhora / 100) > Math.floor(puntajeAntes / 100)) {
+                puntajeEl.classList.remove("parpadeo");
+                void puntajeEl.offsetWidth;        // truco para reiniciar una animación CSS
+                puntajeEl.classList.add("parpadeo");
+            }
+        }
+
+        function dibujar() {
+            // Usamos "bottom" para la altura y "left" para la posición horizontal
+            jugador.style.bottom = (20 + alturaJugador) + "px";
+            enemigo.style.left = enemigoX + "px";
+
+            suelo.style.backgroundPositionX = -desplazamientoFondo + "px";
+            juego.style.backgroundPositionX = -(desplazamientoFondo * 0.2) + "px";
+
+            puntajeEl.textContent = formatear(puntaje);
+        }
+
+        // ---------- Colisiones ----------
+        // Comparamos los rectángulos de ambas imágenes (técnica "AABB").
+        function hayChoque() {
+            const a = jugador.getBoundingClientRect();
+            const b = enemigo.getBoundingClientRect();
+            return (
+                a.left   + MARGEN_CHOQUE < b.right  - MARGEN_CHOQUE &&
+                a.right  - MARGEN_CHOQUE > b.left   + MARGEN_CHOQUE &&
+                a.top    + MARGEN_CHOQUE < b.bottom - MARGEN_CHOQUE &&
+                a.bottom - MARGEN_CHOQUE > b.top    + MARGEN_CHOQUE
+            );
+        }
+
+        // ---------- Utilidades ----------
+        function formatear(n) {
+            return String(Math.floor(n)).padStart(5, "0");   // 42 -> "00042"
+        }
+
+        function mostrarRecord() {
+            recordEl.textContent = formatear(record);
+        }
+
+        // localStorage guarda el récord en el navegador aunque cierres la página
+        function leerRecord() {
+            try { return localStorage.getItem("recordMiniGame"); } catch { return 0; }
+        }
+
+        function guardarRecord(valor) {
+            try { localStorage.setItem("recordMiniGame", valor); } catch { /* sin almacenamiento */ }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
