@@ -36,3 +36,24 @@ En el paquete de node viene instalado nodemon se recomienda correr el servidor c
 De esta manera no se tiene que volver a correr el servidor con cada cambio<br>
 
 Nota: el archivo test.http sirve para hacer pruebas en el servidor 
+
+## Entrega 2: prototipo de interfaces
+
+Para revisar las pantallas de esta entrega no es necesario iniciar el Backend.
+Abre `FRONTEND/views/Login.html` con Live Server de Visual Studio Code, o ejecuta desde la raíz:
+
+```bash
+python3 -m http.server 8080 --bind 127.0.0.1 --directory FRONTEND
+```
+
+Abre http://localhost:8080/views/Login.html. Bootstrap y las imágenes externas requieren internet.
+Los juegos se pueden abrir desde el catálogo sin iniciar sesión.
+
+Juegos disponibles:
+
+- Gato Jump: `FRONTEND/views/Game_01.html`.
+- Atrapa la estrella: `FRONTEND/views/Game_02.html`.
+- Esquiva bloques: `FRONTEND/views/Game_03.html`.
+
+El acceso, el registro, las reseñas y la administración son de demostración. No hay autenticación real ni conexión con MongoDB en este avance. Las contraseñas no se guardan; no uses contraseñas reales. Los récords y favoritos se guardan en el navegador.
+

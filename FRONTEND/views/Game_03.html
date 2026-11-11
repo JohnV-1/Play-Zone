@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es" data-bs-theme="dark">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Esquiva bloques | Play Zone</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="../assets/Estilos.css">
+        <link rel="stylesheet" href="../assets/David.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container-fluid gap-3 flex-wrap">
+                <a class="navbar-brand" href="Home.html">Play Zone</a>
+                <div class="d-flex gap-3 ms-auto align-items-center flex-wrap">
+                    <a class="nav-link" href="Home.html">Catálogo</a>
+                    <a class="nav-link" href="Clasificaciones.html">Clasificaciones</a>
+                    <a class="nav-link" href="Perfil.html">Perfil</a>
+                    <a class="nav-link" href="Administrar.html">Administrar</a>
+                    <a class="btn btn-outline-light" href="Login.html">Iniciar sesión</a>
+                </div>
+            </div>
+        </nav>
+        <main class="container py-4">
+            <div class="text-center mb-4">
+                <span class="badge text-bg-secondary">Arcade</span>
+                <h1 class="mt-2">Esquiva bloques</h1>
+                <p>Usa las flechas izquierda y derecha o los botones. Evita el bloque rojo; cada bloque esquivado suma 10 puntos.</p>
+            </div>
+            <section class="panel mx-auto" style="max-width:800px">
+                <div class="game-stats mb-3">
+                    <span>Puntos: <strong id="puntaje">0</strong>
+                    </span>
+                    <span>Récord: <strong id="record">0</strong>
+                    </span>
+                </div>
+                <div id="pista">
+                    <div id="jugador" hidden>▲</div>
+                    <div id="obstaculo" hidden></div>
+                </div>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                    <button id="izquierda" class="btn" aria-label="Mover a la izquierda">← Izquierda</button>
+                    <button id="derecha" class="btn" aria-label="Mover a la derecha">Derecha →</button>
+                </div>
+                <p id="estado" class="text-center mt-3" role="status">Presiona Jugar para comenzar.</p>
+                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                    <button id="jugar" class="btn btn-purple">Jugar</button>
+                    <a href="Home.html" class="btn">Inicio</a>
+                    <a href="Clasificaciones.html?juego=esquiva" class="btn">Clasificaciones</a>
+                    <a href="Detalle.html?juego=esquiva" class="btn">Detalles y reseñas</a>
+                </div>
+            </section>
+        </main>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="../controllers/prototipo.js"></script>
+        <script src="../controllers/esquiva.js"></script>
+    </body>
+</html>

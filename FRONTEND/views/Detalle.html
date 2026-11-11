@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es" data-bs-theme="dark">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Detalle del juego | Play Zone</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="../assets/Estilos.css">
+        <link rel="stylesheet" href="../assets/David.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container-fluid gap-3 flex-wrap">
+                <a class="navbar-brand" href="Home.html">Play Zone</a>
+                <div class="d-flex gap-3 ms-auto align-items-center flex-wrap">
+                    <a class="nav-link" href="Home.html">Catálogo</a>
+                    <a class="nav-link" href="Clasificaciones.html">Clasificaciones</a>
+                    <a class="nav-link" href="Perfil.html">Perfil</a>
+                    <a class="nav-link" href="Administrar.html">Administrar</a>
+                    <a class="btn btn-outline-light" href="Login.html">Iniciar sesión</a>
+                </div>
+            </div>
+        </nav>
+        <main class="container py-4">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <section class="panel mb-4">
+                        <span class="badge text-bg-secondary" id="categoriaJuego">Arcade</span>
+                        <h1 class="mt-3" id="nombreJuego">Atrapa la estrella</h1>
+                        <p id="descripcionJuego">Atrapa la estrella tantas veces como puedas en 20 segundos.</p>
+                        <p id="controlesJuego">Controles: clic o toque sobre la estrella.</p>
+                        <a id="jugarDetalle" class="btn btn-purple" href="Game_02.html">Jugar ahora</a>
+                        <button id="favorito" class="btn">Agregar a favoritos</button>
+                        <p id="estadoFavorito" class="mt-2 demo-note" role="status"></p>
+                    </section>
+                    <section class="panel">
+                        <h2 class="h4">Reseñas</h2>
+                        <p class="demo-note">Datos de ejemplo. Los cambios de esta vista duran mientras permanezcas en la página.</p>
+                        <div id="listaResenas"></div>
+                        <h3 class="h5 mt-4">Tu reseña</h3>
+                        <form id="resenaForm">
+                            <label for="calificacion" class="form-label">Calificación</label>
+                            <select id="calificacion" class="form-select mb-3">
+                                <option value="5">5 estrellas</option>
+                                <option value="4">4 estrellas</option>
+                                <option value="3">3 estrellas</option>
+                                <option value="2">2 estrellas</option>
+                                <option value="1">1 estrella</option>
+                            </select>
+                            <label for="comentario" class="form-label">Comentario</label>
+                            <textarea id="comentario" class="form-control mb-3" maxlength="300" required></textarea>
+                            <button class="btn btn-purple" id="guardarResena">Publicar reseña</button>
+                        </form>
+                    </section>
+                </div>
+                <div class="col-lg-4">
+                    <aside class="panel">
+                        <h2 class="h4">Más en Play Zone</h2>
+                        <p>Compara tus resultados y encuentra nuevos juegos.</p>
+                        <a href="Clasificaciones.html?juego=atrapa" id="rankingDetalle" class="btn w-100 mb-3">Ver clasificaciones</a>
+                        <a href="Home.html">Volver al catálogo</a>
+                    </aside>
+                </div>
+            </div>
+        </main>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="../controllers/prototipo.js"></script>
+        <script src="../controllers/detalle.js"></script>
+    </body>
+</html>

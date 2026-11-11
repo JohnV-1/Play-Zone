@@ -1,0 +1,16 @@
+body { min-height:100vh; background:#050b1a; color:#f1f1f1; }
+a { color:#b798ff; } .navbar .nav-link { color:#eee; }
+.auth-panel { max-width:480px; margin:35px auto; }
+.form-control,.form-select { background-color:#0c1427; color:white; border-color:#35466c; }
+.form-control:focus { background:#0c1427; color:white; border-color:#9361ff; }
+.btn-purple { background:#784af2; color:white; border-color:#784af2; }
+.btn-purple:hover { background:#6337d7; color:white; }
+.demo-note { color:#a6b1cd; font-size:.9rem; }
+.game-stats { display:flex; flex-wrap:wrap; justify-content:center; gap:24px; }
+.arcade-cover { height:160px; background:linear-gradient(135deg,#1c1241,#35466c); display:grid; place-items:center; font-size:3rem; color:#ffd166; }
+#escenario { position:relative; height:320px; overflow:hidden; border:1px solid #35466c; border-radius:10px; background:radial-gradient(ellipse at top,#24335b,#0c1427); }
+#estrella { position:absolute; width:60px; height:60px; border:2px solid #ffd166; border-radius:50%; background:#1c1241; color:#ffd166; font-size:38px; line-height:1; cursor:pointer; touch-action:manipulation; }
+#pista { position:relative; width:100%; max-width:360px; height:360px; margin:auto; overflow:hidden; border:1px solid #35466c; border-radius:10px; background:linear-gradient(90deg,#0c1427 33%,#35466c 33%,#35466c 34%,#0c1427 34%,#0c1427 66%,#35466c 66%,#35466c 67%,#0c1427 67%); }
+#jugador,#obstaculo { position:absolute; width:40px; height:40px; transform:translateX(-50%); border-radius:6px; }
+#jugador { bottom:25px; left:50%; background:#784af2; color:white; text-align:center; font-size:28px; }
+#obstaculo { background:#e55353; border:2px solid #ff9797; }
