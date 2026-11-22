@@ -1,19 +1,24 @@
-// ---------- Datos de ejemplo ----------
-const juegos = [
-    {id: 'gato', nombre: 'Gato Jump', descripcion: 'Salta los obstáculos y consigue tu mejor puntuación.', controles: 'Espacio, W, flecha arriba o toque en la pantalla.', pagina: 'Game_01.html'},
-    {id: 'atrapa', nombre: 'Atrapa la estrella', descripcion: 'Atrapa la estrella tantas veces como puedas en 20 segundos.', controles: 'Clic o toque sobre la estrella.', pagina: 'Game_02.html'},
-    {id: 'esquiva', nombre: 'Esquiva bloques', descripcion: 'Cambia de carril para evitar los bloques rojos.', controles: 'Flechas izquierda y derecha o botones en pantalla.', pagina: 'Game_03.html'}
-];
-const solicitado = new URLSearchParams(window.location.search).get('juego');
-const juego = juegos.find((item) => item.id === solicitado) || juegos[1];
-const juegoId = juego.id;
-document.getElementById('nombreJuego').textContent = juego.nombre;
-document.getElementById('categoriaJuego').textContent = 'Arcade';
-document.getElementById('descripcionJuego').textContent = juego.descripcion;
-document.getElementById('controlesJuego').textContent = 'Controles: ' + juego.controles;
-document.getElementById('jugarDetalle').href = juego.pagina;
-document.getElementById('rankingDetalle').href = 'Clasificaciones.html?juego=' + juegoId;
-let resenas = [{nombre: 'Luna', texto: 'Es fácil de aprender y entretenido.', calificacion: 5}];
+const solicitado = new URLSearchParams(window.location.search).get('juego') || 'atrapa';
+let juegoId = solicitado;
+
+async function cargarDetalleJuego() {
+    try {
+        const juego = await apiFetch(`/juegos/${solicitado}`);
+        juegoId = juego.id;
+        document.getElementById('nombreJuego').textContent = juego.nombre;
+        document.getElementById('categoriaJuego').textContent = juego.categoria;
+        document.getElementById('descripcionJuego').textContent = juego.descripcion;
+        document.getElementById('controlesJuego').textContent = 'Controles: ' + juego.controles;
+        document.getElementById('jugarDetalle').href = juego.pagina;
+        document.getElementById('rankingDetalle').href = 'Clasificaciones.html?juego=' + juego.id;
+    } catch (error) {
+        document.getElementById('nombreJuego').textContent = 'Juego no encontrado';
+        document.getElementById('descripcionJuego').textContent = error.message;
+    }
+}
+
+// ---------- Reseñas ----------
+let resenas = [{ nombre: 'Luna', texto: 'Es fácil de aprender y entretenido.', calificacion: 5 }];
 let editando = -1;
 const lista = document.getElementById('listaResenas');
 const form = document.getElementById('resenaForm');
@@ -55,10 +60,16 @@ function mostrarResenas() {
         lista.appendChild(bloque);
     });
 }
+
 form.addEventListener('submit', (evento) => {
     evento.preventDefault();
     if (!comentario.value.trim()) return;
-    const resena = {nombre: sessionStorage.getItem('usuarioDemo') || 'Jugador de ejemplo', texto: comentario.value.trim(), calificacion: calificacion.value, propia: true};
+    const resena = {
+        nombre: sessionStorage.getItem('usuarioDemo') || 'David',
+        texto: comentario.value.trim(),
+        calificacion: calificacion.value,
+        propia: true
+    };
     if (editando === -1) resenas.push(resena);
     else resenas[editando] = resena;
     editando = -1;
@@ -66,17 +77,45 @@ form.addEventListener('submit', (evento) => {
     document.getElementById('guardarResena').textContent = 'Publicar reseña';
     mostrarResenas();
 });
-mostrarResenas();
 
-// ---------- Favoritos ----------
+// ---------- Favoritos (conectado al backend) ----------
 const favorito = document.getElementById('favorito');
-function mostrarFavorito() {
-    favorito.textContent = localStorage.getItem('favorito-' + juegoId) ? 'Quitar de favoritos' : 'Agregar a favoritos';
+const estadoFavorito = document.getElementById('estadoFavorito');
+let esFavorito = false;
+
+function actualizarBotonFavorito() {
+    favorito.textContent = esFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos';
 }
-favorito.addEventListener('click', () => {
-    if (localStorage.getItem('favorito-' + juegoId)) localStorage.removeItem('favorito-' + juegoId);
-    else localStorage.setItem('favorito-' + juegoId, 'true');
-    mostrarFavorito();
-    document.getElementById('estadoFavorito').textContent = 'Favoritos actualizados en este navegador.';
+
+async function sincronizarFavorito() {
+    try {
+        const listaFavoritos = await apiFetch('/favoritos');
+        esFavorito = listaFavoritos.some((item) => item.id === juegoId);
+        actualizarBotonFavorito();
+    } catch (error) {
+        estadoFavorito.textContent = 'No se pudo consultar el estado de favoritos.';
+    }
+}
+
+favorito.addEventListener('click', async () => {
+    try {
+        if (esFavorito) {
+            await apiFetch(`/favoritos/${juegoId}`, { method: 'DELETE' });
+            esFavorito = false;
+            estadoFavorito.textContent = 'Juego eliminado de tus favoritos.';
+        } else {
+            await apiFetch('/favoritos', {
+                method: 'POST',
+                body: JSON.stringify({ juegoId })
+            });
+            esFavorito = true;
+            estadoFavorito.textContent = 'Juego agregado a tus favoritos.';
+        }
+        actualizarBotonFavorito();
+    } catch (error) {
+        estadoFavorito.textContent = 'Error al actualizar favoritos: ' + error.message;
+    }
 });
-mostrarFavorito();
+
+cargarDetalleJuego().then(sincronizarFavorito);
+mostrarResenas();
