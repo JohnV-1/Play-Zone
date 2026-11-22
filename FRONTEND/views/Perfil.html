@@ -13,6 +13,35 @@
         />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link rel="stylesheet" href="../assets/David.css">
+
+        <style>
+            .card-juego {
+                background-color: #131825;
+                border: 1px solid #1f293d;
+                border-radius: 12px;
+                overflow: hidden;
+                transition: transform 0.2s ease;
+            }
+
+            .card-juego:hover {
+                transform: translateY(-5px);
+            }
+
+            .card-juego img {
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+                height: 160px;
+                object-fit: cover;
+            }
+
+            .badge-categoria {
+                background-color: #1d263b;
+                color: #93c5fd;
+                font-weight: 500;
+                font-size: 0.8rem;
+                border: none;
+            }
+        </style>
     </head>
 
     <body>
@@ -79,7 +108,7 @@
                     <a href="Home.html" class="btn btn-sm">Explorar catálogo</a>
                 </div>
 
-                <div id="misFavoritos" class="row row-cols-2 row-cols-sm-4 g-3 g-lg-4"></div>
+                <div id="misFavoritos" class="row g-3"></div>
 
                 <hr class="my-4">
                 <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminarCuentaModal">

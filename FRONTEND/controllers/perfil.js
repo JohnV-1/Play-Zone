@@ -74,35 +74,52 @@ function renderizarFavoritos(lista) {
         return;
     }
 
-    contenedorFavoritos.className = 'row row-cols-2 row-cols-sm-4 g-3 g-lg-4';
+    contenedorFavoritos.className = 'row g-3';
 
     lista.forEach((juego) => {
         const col = document.createElement('div');
-        col.className = 'col';
+        col.className = 'col-12 col-sm-6 col-md-4 col-lg-3';
 
         const card = document.createElement('div');
-        card.className = 'game-cover';
+        card.className = 'card card-juego h-100 shadow-sm position-relative';
 
-        const img = document.createElement('img');
-        img.src = juego.imagen;
-        img.alt = juego.nombre;
-
+        // Botón de corazón en la esquina superior derecha para quitar de favoritos
         const btnFav = document.createElement('button');
         btnFav.type = 'button';
-        btnFav.className = 'btn-fav';
+        btnFav.className = 'btn-fav position-absolute top-0 end-0 m-2';
         btnFav.title = 'Quitar de favoritos';
         btnFav.setAttribute('aria-label', `Quitar ${juego.nombre} de favoritos`);
 
         const iconoCorazon = document.createElement('i');
         iconoCorazon.className = 'bi bi-heart-fill';
         btnFav.appendChild(iconoCorazon);
-
         btnFav.addEventListener('click', () => quitarFavorito(juego.id, juego.nombre));
 
-        const titulo = document.createElement('a');
-        titulo.href = `Detalle.html?juego=${juego.id}`;
-        titulo.className = 'game-cover-title text-decoration-none text-white';
+        // Imagen superior idéntica a Home.html
+        const img = document.createElement('img');
+        img.src = juego.imagen;
+        img.className = 'card-img-top';
+        img.alt = juego.nombre;
+
+        // Cuerpo de la tarjeta idéntico a Home.html
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body d-flex flex-column p-3';
+
+        const titulo = document.createElement('h6');
+        titulo.className = 'card-title text-white fw-bold mb-2';
         titulo.textContent = juego.nombre;
+
+        const pieTarjeta = document.createElement('div');
+        pieTarjeta.className = 'mt-auto';
+
+        const badge = document.createElement('span');
+        badge.className = 'badge badge-categoria px-2 py-1 me-1';
+        badge.textContent = juego.categoria || 'Arcade';
+
+        const linkDetalles = document.createElement('a');
+        linkDetalles.href = `Detalle.html?juego=${juego.id}`;
+        linkDetalles.className = 'small';
+        linkDetalles.textContent = 'Detalles';
 
         const btnPlay = document.createElement('a');
         btnPlay.href = juego.pagina;
@@ -113,7 +130,9 @@ function renderizarFavoritos(lista) {
         iconoPlay.className = 'bi bi-play-fill';
         btnPlay.appendChild(iconoPlay);
 
-        card.append(img, btnFav, titulo, btnPlay);
+        pieTarjeta.append(badge, linkDetalles, btnPlay);
+        cardBody.append(titulo, pieTarjeta);
+        card.append(btnFav, img, cardBody);
         col.appendChild(card);
         contenedorFavoritos.appendChild(col);
     });
