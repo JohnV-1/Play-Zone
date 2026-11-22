@@ -1,4 +1,3 @@
-// ---------- Elementos del HTML ----------
 const pista = document.getElementById('pista');
 const jugador = document.getElementById('jugador');
 const obstaculo = document.getElementById('obstaculo');
@@ -7,7 +6,6 @@ const recordEl = document.getElementById('record');
 const estado = document.getElementById('estado');
 const botonJugar = document.getElementById('jugar');
 
-// ---------- Estado del juego ----------
 let jugando = false;
 let carrilJugador = 1;
 let carrilObstaculo = 0;
@@ -15,10 +13,19 @@ let posicionY = -45;
 let puntaje = 0;
 let velocidad = 5;
 let reloj;
-let record = Number(localStorage.getItem('recordEsquiva')) || 0;
-recordEl.textContent = record;
+let record = 0;
 
-// ---------- Controles ----------
+async function cargarRecordInicial() {
+    try {
+        const datos = await apiFetch('/rankings/esquiva');
+        record = datos.mejorPuntaje || 0;
+        recordEl.textContent = record;
+    } catch {
+        record = Number(localStorage.getItem('recordEsquiva')) || 0;
+        recordEl.textContent = record;
+    }
+}
+
 botonJugar.addEventListener('click', iniciar);
 document.getElementById('izquierda').addEventListener('click', () => mover(-1));
 document.getElementById('derecha').addEventListener('click', () => mover(1));
@@ -29,7 +36,6 @@ document.addEventListener('keydown', (evento) => {
     }
 });
 
-// ---------- Funciones del juego ----------
 function iniciar() {
     clearInterval(reloj);
     jugando = true;
@@ -75,13 +81,29 @@ function actualizar() {
     }
 }
 
-function terminar() {
+async function terminar() {
     clearInterval(reloj);
     jugando = false;
-    estado.textContent = '¡Choque! Tu puntaje fue de ' + puntaje + '. Intenta de nuevo.';
-    if (puntaje > record) {
-        record = puntaje;
-        localStorage.setItem('recordEsquiva', record);
+    estado.textContent = `¡Choque! Tu puntaje fue de ${puntaje}. Guardando resultado...`;
+
+    try {
+        const res = await apiFetch('/rankings', {
+            method: 'POST',
+            body: JSON.stringify({ juegoId: 'esquiva', puntuacion: puntaje })
+        });
+        record = res.mejorPuntaje;
         recordEl.textContent = record;
+        estado.textContent = res.nuevoRecord
+            ? `¡Nuevo récord personal: ${puntaje} pts! Ahora estás en el puesto #${res.posicionActual}.`
+            : `Puntaje: ${puntaje} pts. Tu récord sigue en ${record} pts (Puesto #${res.posicionActual}).`;
+    } catch {
+        if (puntaje > record) {
+            record = puntaje;
+            localStorage.setItem('recordEsquiva', record);
+            recordEl.textContent = record;
+        }
+        estado.textContent = `¡Choque! Tu puntaje fue de ${puntaje}.`;
     }
 }
+
+cargarRecordInicial();

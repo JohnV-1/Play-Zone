@@ -35,48 +35,25 @@ const db = {
         avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png'
     },
     favoritosIds: ['gato'],
-    rankings: {
-        gato: {
-            mejorPuntaje: 1450,
-            posicionActual: 2,
-            tabla: [
-                { posicion: 1, avatar: '🐱', nombre: 'Ana', puntuacion: 1800, fecha: '2026-11-15', esUsuarioActual: false },
-                { posicion: 2, avatar: '🎮', nombre: 'David', puntuacion: 1450, fecha: '2026-11-17', esUsuarioActual: true },
-                { posicion: 3, avatar: '🚀', nombre: 'Carlos', puntuacion: 1200, fecha: '2026-11-16', esUsuarioActual: false },
-                { posicion: 4, avatar: '⭐', nombre: 'Lucía', puntuacion: 950, fecha: '2026-11-14', esUsuarioActual: false }
-            ]
-        },
-        atrapa: {
-            mejorPuntaje: 2300,
-            posicionActual: 3,
-            tabla: [
-                { posicion: 1, avatar: '⭐', nombre: 'Lucía', puntuacion: 3100, fecha: '2026-11-18', esUsuarioActual: false },
-                { posicion: 2, avatar: '🐱', nombre: 'Ana', puntuacion: 2750, fecha: '2026-11-16', esUsuarioActual: false },
-                { posicion: 3, avatar: '🎮', nombre: 'David', puntuacion: 2300, fecha: '2026-11-17', esUsuarioActual: true },
-                { posicion: 4, avatar: '👾', nombre: 'Mateo', puntuacion: 1900, fecha: '2026-11-12', esUsuarioActual: false }
-            ]
-        },
-        esquiva: {
-            mejorPuntaje: 4200,
-            posicionActual: 1,
-            tabla: [
-                { posicion: 1, avatar: '🎮', nombre: 'David', puntuacion: 4200, fecha: '2026-11-18', esUsuarioActual: true },
-                { posicion: 2, avatar: '🚀', nombre: 'Carlos', puntuacion: 3850, fecha: '2026-11-17', esUsuarioActual: false },
-                { posicion: 3, avatar: '👾', nombre: 'Mateo', puntuacion: 3400, fecha: '2026-11-15', esUsuarioActual: false },
-                { posicion: 4, avatar: '🐱', nombre: 'Ana', puntuacion: 2900, fecha: '2026-11-13', esUsuarioActual: false }
-            ]
-        },
-        'space-invaders': {
-            mejorPuntaje: 5600,
-            posicionActual: 2,
-            tabla: [
-                { posicion: 1, avatar: '👾', nombre: 'Mateo', puntuacion: 6400, fecha: '2026-11-18', esUsuarioActual: false },
-                { posicion: 2, avatar: '🎮', nombre: 'David', puntuacion: 5600, fecha: '2026-11-17', esUsuarioActual: true },
-                { posicion: 3, avatar: '⭐', nombre: 'Lucía', puntuacion: 4900, fecha: '2026-11-15', esUsuarioActual: false },
-                { posicion: 4, avatar: '🚀', nombre: 'Carlos', puntuacion: 4100, fecha: '2026-11-11', esUsuarioActual: false }
-            ]
-        }
-    }
+    puntuaciones: [
+        // Gato Jump
+        { juegoId: 'gato', usuarioId: 2, nombre: 'Nova', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 420, fecha: '18 nov 2026' },
+        { juegoId: 'gato', usuarioId: 3, nombre: 'Luna', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 310, fecha: '19 nov 2026' },
+        { juegoId: 'gato', usuarioId: 1, nombre: 'David', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 250, fecha: '20 nov 2026' },
+        { juegoId: 'gato', usuarioId: 4, nombre: 'RetroMax', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 180, fecha: '21 nov 2026' },
+
+        // Atrapa la estrella
+        { juegoId: 'atrapa', usuarioId: 3, nombre: 'Luna', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 240, fecha: '19 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 1, nombre: 'David', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 190, fecha: '20 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 5, nombre: 'Astro', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 150, fecha: '21 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 2, nombre: 'Nova', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 120, fecha: '21 nov 2026' },
+
+        // Esquiva bloques
+        { juegoId: 'esquiva', usuarioId: 1, nombre: 'David', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 350, fecha: '20 nov 2026' },
+        { juegoId: 'esquiva', usuarioId: 4, nombre: 'RetroMax', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 290, fecha: '20 nov 2026' },
+        { juegoId: 'esquiva', usuarioId: 2, nombre: 'Nova', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 210, fecha: '21 nov 2026' },
+        { juegoId: 'esquiva', usuarioId: 5, nombre: 'Astro', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 140, fecha: '22 nov 2026' }
+    ]
 };
 
 module.exports = db;

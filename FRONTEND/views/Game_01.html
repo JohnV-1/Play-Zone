@@ -11,6 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
 
+    <script src="../controllers/prototipo.js"></script>
+
     <style>
         body {
             background-color: #202124;
@@ -262,7 +264,15 @@
         let desplazamientoFondo = 0;
         let tiempoAnterior = 0;
 
-        mostrarRecord();
+        async function cargarRecordInicial() {
+            try {
+                const datos = await apiFetch('/rankings/gato');
+                record = datos.mejorPuntaje || 0;
+            } catch {
+                record = Number(localStorage.getItem("recordMiniGame")) || 0;
+            }
+            mostrarRecord();
+        }
 
         // ---------- Controles ----------
         document.addEventListener("keydown", (evento) => {
@@ -303,18 +313,34 @@
             }
         }
 
-        function terminar() {
+        async function terminar() {
             jugando = false;
             jugador.classList.remove("corriendo");
-            if (puntaje > record) {
-                record = Math.floor(puntaje);
-                guardarRecord(record);
-                mostrarRecord();
-            }
-            // Al perder se muestran 3 botones: Reintentar, Inicio y Clasificaciones
+            const puntajeFinal = Math.floor(puntaje);
+
             titulo.textContent = "GAME OVER";
             boton.textContent = "Reintentar";
+            instrucciones.textContent = `Puntaje: ${puntajeFinal}. Guardando resultado...`;
             mensaje.classList.remove("oculto");
+
+            try {
+                const res = await apiFetch('/rankings', {
+                    method: 'POST',
+                    body: JSON.stringify({ juegoId: 'gato', puntuacion: puntajeFinal })
+                });
+                record = res.mejorPuntaje;
+                mostrarRecord();
+                instrucciones.textContent = res.nuevoRecord
+                    ? `¡Nuevo récord: ${puntajeFinal} pts! Puesto #${res.posicionActual} en la clasificación.`
+                    : `Puntaje: ${puntajeFinal} pts · Puesto actual: #${res.posicionActual}`;
+            } catch {
+                if (puntajeFinal > record) {
+                    record = puntajeFinal;
+                    localStorage.setItem("recordMiniGame", record);
+                    mostrarRecord();
+                }
+                instrucciones.textContent = `Puntaje final: ${puntajeFinal} pts`;
+            }
         }
 
         // ---------- GAME LOOP ----------
@@ -416,6 +442,8 @@
         function guardarRecord(valor) {
             try { localStorage.setItem("recordMiniGame", valor); } catch { /* sin almacenamiento */ }
         }
+
+        cargarRecordInicial();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

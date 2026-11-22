@@ -1,4 +1,3 @@
-// ---------- Elementos del HTML ----------
 const escenario = document.getElementById('escenario');
 const estrella = document.getElementById('estrella');
 const puntajeEl = document.getElementById('puntaje');
@@ -7,13 +6,22 @@ const recordEl = document.getElementById('record');
 const estado = document.getElementById('estado');
 const botonJugar = document.getElementById('jugar');
 
-// ---------- Estado del juego ----------
 let jugando = false;
 let puntaje = 0;
 let tiempo = 20;
 let reloj;
-let record = Number(localStorage.getItem('recordAtrapa')) || 0;
-recordEl.textContent = record;
+let record = 0;
+
+async function cargarRecordInicial() {
+    try {
+        const datos = await apiFetch('/rankings/atrapa');
+        record = datos.mejorPuntaje || 0;
+        recordEl.textContent = record;
+    } catch {
+        record = Number(localStorage.getItem('recordAtrapa')) || 0;
+        recordEl.textContent = record;
+    }
+}
 
 botonJugar.addEventListener('click', iniciar);
 estrella.addEventListener('click', () => {
@@ -23,7 +31,6 @@ estrella.addEventListener('click', () => {
     moverEstrella();
 });
 
-// ---------- Funciones del juego ----------
 function iniciar() {
     clearInterval(reloj);
     jugando = true;
@@ -49,17 +56,34 @@ function moverEstrella() {
     estrella.style.top = Math.floor(Math.random() * alto) + 'px';
 }
 
-function terminar() {
+async function terminar() {
     clearInterval(reloj);
     jugando = false;
     estrella.hidden = true;
-    estado.textContent = '¡Tiempo! Tu puntaje fue de ' + puntaje + '. Puedes volver a jugar.';
-    if (puntaje > record) {
-        record = puntaje;
-        localStorage.setItem('recordAtrapa', record);
+    estado.textContent = `¡Tiempo! Tu puntaje fue de ${puntaje}. Guardando resultado...`;
+
+    try {
+        const res = await apiFetch('/rankings', {
+            method: 'POST',
+            body: JSON.stringify({ juegoId: 'atrapa', puntuacion: puntaje })
+        });
+        record = res.mejorPuntaje;
         recordEl.textContent = record;
+        estado.textContent = res.nuevoRecord
+            ? `¡Nuevo récord personal: ${puntaje} pts! Ahora estás en el puesto #${res.posicionActual}.`
+            : `Puntaje: ${puntaje} pts. Tu récord sigue en ${record} pts (Puesto #${res.posicionActual}).`;
+    } catch {
+        if (puntaje > record) {
+            record = puntaje;
+            localStorage.setItem('recordAtrapa', record);
+            recordEl.textContent = record;
+        }
+        estado.textContent = `¡Tiempo! Tu puntaje fue de ${puntaje}.`;
     }
 }
+
 window.addEventListener('resize', () => {
     if (jugando) moverEstrella();
 });
+
+cargarRecordInicial();
