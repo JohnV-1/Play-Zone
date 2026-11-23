@@ -1,28 +1,95 @@
+const crypto = require('crypto');
 const db = require('../database/db');
 
+// ---------- Validaciones (reglas de los datos del usuario) ----------
+
+// Revisa que el valor sea texto y que, sin espacios al inicio y final,
+// tenga entre min y max caracteres.
+function esTextoValido(valor, min, max) {
+    if (typeof valor !== 'string') return false;
+    const largo = valor.trim().length;
+    return largo >= min && largo <= max;
+}
+
+function esEmailValido(valor) {
+    return typeof valor === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor.trim());
+}
+
+// Quita la contraseña antes de mandar el usuario al Frontend
+function sinPassword(usuario) {
+    if (!usuario) return null;
+    const { password, ...resto } = usuario;
+    return resto;
+}
+
 const PerfilModel = {
-    obtener() {
-        return db.perfil;
+    esTextoValido,
+    esEmailValido,
+    sinPassword,
+
+    obtenerPorId(id) {
+        return db.usuarios.find((u) => u.id === id) || null;
     },
 
-    actualizar({ nombre, descripcion }) {
-        db.perfil = {
-            ...db.perfil,
+    obtenerPorEmail(email) {
+        const buscado = email.trim().toLowerCase();
+        return db.usuarios.find((u) => u.email === buscado) || null;
+    },
+
+    nombreEnUso(nombre, excluirId = null) {
+        const buscado = nombre.trim().toLowerCase();
+        return db.usuarios.some((u) => u.nombre.toLowerCase() === buscado && u.id !== excluirId);
+    },
+
+    crear({ nombre, email, password }) {
+        const nuevo = {
+            id: db.siguienteUsuarioId++,
             nombre: nombre.trim(),
-            descripcion: descripcion !== undefined ? descripcion.trim() : db.perfil.descripcion
+            email: email.trim().toLowerCase(),
+            password,
+            descripcion: '',
+            avatar: db.AVATAR_DEFAULT
         };
-        return db.perfil;
+        db.usuarios.push(nuevo);
+        return nuevo;
     },
 
-    reiniciarCuenta() {
-        db.perfil = {
-            id: 1,
-            nombre: 'David',
-            descripcion: 'Me gustan los juegos casuales y mejorar mis récords.',
-            avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png'
-        };
-        db.favoritosIds = [];
-        return true;
+    actualizar(id, { nombre, descripcion }) {
+        const usuario = this.obtenerPorId(id);
+        if (!usuario) return null;
+        usuario.nombre = nombre.trim();
+        if (descripcion !== undefined) {
+            usuario.descripcion = descripcion.trim();
+        }
+        return usuario;
+    },
+
+    // Borra al usuario y todo lo que le pertenece
+    eliminar(id) {
+        const existia = db.usuarios.some((u) => u.id === id);
+        db.usuarios = db.usuarios.filter((u) => u.id !== id);
+        db.favoritos = db.favoritos.filter((f) => f.usuarioId !== id);
+        db.puntuaciones = db.puntuaciones.filter((p) => p.usuarioId !== id);
+        Object.keys(db.sesiones).forEach((token) => {
+            if (db.sesiones[token] === id) delete db.sesiones[token];
+        });
+        return existia;
+    },
+
+    // ---------- Sesiones ----------
+    crearSesion(usuarioId) {
+        const token = crypto.randomUUID();
+        db.sesiones[token] = usuarioId;
+        return token;
+    },
+
+    obtenerPorToken(token) {
+        const usuarioId = db.sesiones[token];
+        return usuarioId ? this.obtenerPorId(usuarioId) : null;
+    },
+
+    cerrarSesion(token) {
+        delete db.sesiones[token];
     }
 };
 
