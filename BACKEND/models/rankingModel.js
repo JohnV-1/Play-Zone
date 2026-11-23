@@ -10,78 +10,61 @@ function formatearFechaActual() {
 }
 
 const RankingModel = {
-    obtenerPorJuego(juegoId) {
+    // usuarioActualId puede ser null cuando no hay sesión
+    obtenerPorJuego(juegoId, usuarioActualId = null) {
         const juego = JuegoModel.obtenerPorId(juegoId);
         if (!juego) return null;
 
-        const registros = db.puntuaciones
+        const tabla = db.puntuaciones
             .filter((item) => item.juegoId === juegoId)
             .map((item) => {
-                const esUsuarioActual = item.usuarioId === db.perfil.id;
+                const usuario = db.usuarios.find((u) => u.id === item.usuarioId);
+                if (!usuario) return null; // usuario eliminado
                 return {
-                    usuarioId: item.usuarioId,
-                    nombre: esUsuarioActual ? db.perfil.nombre : item.nombre,
-                    avatar: esUsuarioActual ? db.perfil.avatar : item.avatar,
+                    nombre: usuario.nombre,
+                    avatar: usuario.avatar,
                     puntuacion: item.puntuacion,
                     fecha: item.fecha,
-                    esUsuarioActual
+                    esUsuarioActual: usuario.id === usuarioActualId
                 };
             })
+            .filter(Boolean)
             .sort((a, b) => b.puntuacion - a.puntuacion)
-            .map((item, indice) => ({
-                posicion: indice + 1,
-                avatar: item.avatar,
-                nombre: item.nombre,
-                puntuacion: item.puntuacion,
-                fecha: item.fecha,
-                esUsuarioActual: item.esUsuarioActual
-            }));
+            .map((item, indice) => ({ posicion: indice + 1, ...item }));
 
-        const registroUsuario = registros.find((item) => item.esUsuarioActual);
+        const registroUsuario = tabla.find((item) => item.esUsuarioActual);
 
         return {
             juego,
-            tabla: registros,
+            tabla,
             mejorPuntaje: registroUsuario ? registroUsuario.puntuacion : 0,
             posicionActual: registroUsuario ? registroUsuario.posicion : null
         };
     },
 
-    registrarPuntuacion({ juegoId, puntuacion }) {
-        const juego = JuegoModel.obtenerPorId(juegoId);
-        if (!juego) return null;
+    // Solo se guarda si es mejor que el récord anterior del usuario
+    registrarPuntuacion(usuarioId, juegoId, puntuacion) {
+        if (!JuegoModel.obtenerPorId(juegoId)) return null;
 
-        const puntajeNumerico = Math.max(0, Math.floor(Number(puntuacion) || 0));
         const fechaHoy = formatearFechaActual();
-
         const existente = db.puntuaciones.find(
-            (item) => item.juegoId === juegoId && item.usuarioId === db.perfil.id
+            (item) => item.juegoId === juegoId && item.usuarioId === usuarioId
         );
 
         let nuevoRecord = false;
-
         if (!existente) {
-            db.puntuaciones.push({
-                juegoId,
-                usuarioId: db.perfil.id,
-                nombre: db.perfil.nombre,
-                avatar: db.perfil.avatar,
-                puntuacion: puntajeNumerico,
-                fecha: fechaHoy
-            });
-            nuevoRecord = puntajeNumerico > 0;
-        } else if (puntajeNumerico > existente.puntuacion) {
-            existente.puntuacion = puntajeNumerico;
+            db.puntuaciones.push({ juegoId, usuarioId, puntuacion, fecha: fechaHoy });
+            nuevoRecord = puntuacion > 0;
+        } else if (puntuacion > existente.puntuacion) {
+            existente.puntuacion = puntuacion;
             existente.fecha = fechaHoy;
             nuevoRecord = true;
         }
 
-        const rankingActualizado = this.obtenerPorJuego(juegoId);
-
         return {
             guardado: true,
             nuevoRecord,
-            ...rankingActualizado
+            ...this.obtenerPorJuego(juegoId, usuarioId)
         };
     }
 };
