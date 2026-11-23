@@ -11,9 +11,14 @@ async function cargarDetalleJuego() {
         document.getElementById('controlesJuego').textContent = 'Controles: ' + juego.controles;
         document.getElementById('jugarDetalle').href = juego.pagina;
         document.getElementById('rankingDetalle').href = 'Clasificaciones.html?juego=' + juego.id;
+        return true;
     } catch (error) {
         document.getElementById('nombreJuego').textContent = 'Juego no encontrado';
         document.getElementById('descripcionJuego').textContent = error.message;
+        document.getElementById('controlesJuego').textContent = '';
+        document.getElementById('jugarDetalle').classList.add('d-none');
+        favorito.classList.add('d-none');
+        return false;
     }
 }
 
@@ -65,7 +70,7 @@ form.addEventListener('submit', (evento) => {
     evento.preventDefault();
     if (!comentario.value.trim()) return;
     const resena = {
-        nombre: sessionStorage.getItem('usuarioDemo') || 'David',
+        nombre: sessionStorage.getItem('usuario') || 'Invitado',
         texto: comentario.value.trim(),
         calificacion: calificacion.value,
         propia: true
@@ -88,6 +93,8 @@ function actualizarBotonFavorito() {
 }
 
 async function sincronizarFavorito() {
+    actualizarBotonFavorito();
+    if (!sesionIniciada()) return; // los favoritos son por usuario
     try {
         const listaFavoritos = await apiFetch('/favoritos');
         esFavorito = listaFavoritos.some((item) => item.id === juegoId);
@@ -98,24 +105,33 @@ async function sincronizarFavorito() {
 }
 
 favorito.addEventListener('click', async () => {
+    if (!sesionIniciada()) {
+        mostrarAlerta('Inicia sesión para guardar tus juegos favoritos.', 'warning');
+        return;
+    }
+    favorito.disabled = true;
     try {
         if (esFavorito) {
             await apiFetch(`/favoritos/${juegoId}`, { method: 'DELETE' });
             esFavorito = false;
-            estadoFavorito.textContent = 'Juego eliminado de tus favoritos.';
+            mostrarAlerta('Juego eliminado de tus favoritos.', 'success');
         } else {
             await apiFetch('/favoritos', {
                 method: 'POST',
                 body: JSON.stringify({ juegoId })
             });
             esFavorito = true;
-            estadoFavorito.textContent = 'Juego agregado a tus favoritos.';
+            mostrarAlerta('Juego agregado a tus favoritos.', 'success');
         }
         actualizarBotonFavorito();
     } catch (error) {
-        estadoFavorito.textContent = 'Error al actualizar favoritos: ' + error.message;
+        mostrarAlerta('Error al actualizar favoritos: ' + error.message);
+    } finally {
+        favorito.disabled = false;
     }
 });
 
-cargarDetalleJuego().then(sincronizarFavorito);
+cargarDetalleJuego().then((existe) => {
+    if (existe) sincronizarFavorito();
+});
 mostrarResenas();
