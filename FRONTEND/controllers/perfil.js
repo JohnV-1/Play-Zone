@@ -16,11 +16,18 @@ async function cargarPerfil() {
         if (perfil.avatar && avatarPerfil) {
             avatarPerfil.src = perfil.avatar;
         }
-        sessionStorage.setItem('usuarioDemo', perfil.nombre);
+        sessionStorage.setItem('usuario', perfil.nombre);
         actualizarNombreNavbar(perfil.nombre);
     } catch (error) {
+        if (error.status === 401) {
+            // La sesión ya no es válida (ej. se reinició el servidor)
+            avisoSiguientePagina('Tu sesión expiró. Vuelve a iniciar sesión.', 'warning');
+            window.location.href = 'Login.html';
+            return;
+        }
         nombrePerfil.textContent = 'Error al cargar perfil';
         descripcionPerfil.textContent = error.message;
+        mostrarAlerta(error.message);
     }
 }
 
@@ -33,8 +40,17 @@ document.getElementById('perfilForm').addEventListener('submit', async (evento) 
     evento.preventDefault();
     const nombre = editarNombre.value.trim();
     const descripcion = editarDescripcion.value.trim();
-    if (nombre.length < 3) return;
+    if (nombre.length < 3 || nombre.length > 25) {
+        mostrarAlerta('El nombre debe tener entre 3 y 25 caracteres.', 'warning');
+        return;
+    }
+    if (descripcion.length > 200) {
+        mostrarAlerta('La descripción puede tener máximo 200 caracteres.', 'warning');
+        return;
+    }
 
+    const boton = evento.submitter;
+    bloquearBoton(boton, true, 'Guardando...');
     try {
         const actualizado = await apiFetch('/perfil', {
             method: 'PUT',
@@ -42,23 +58,28 @@ document.getElementById('perfilForm').addEventListener('submit', async (evento) 
         });
         nombrePerfil.textContent = actualizado.nombre;
         descripcionPerfil.textContent = actualizado.descripcion;
-        sessionStorage.setItem('usuarioDemo', actualizado.nombre);
+        sessionStorage.setItem('usuario', actualizado.nombre);
         actualizarNombreNavbar(actualizado.nombre);
         modalPerfil.hide();
+        mostrarAlerta('Perfil actualizado correctamente.', 'success');
     } catch (error) {
-        alert(error.message);
+        mostrarAlerta(error.message);
+    } finally {
+        bloquearBoton(boton, false);
     }
 });
 
-document.getElementById('confirmarEliminarCuenta').addEventListener('click', async () => {
+document.getElementById('confirmarEliminarCuenta').addEventListener('click', async (evento) => {
+    const boton = evento.currentTarget;
+    bloquearBoton(boton, true, 'Eliminando...');
     try {
-        await apiFetch('/perfil', { method: 'DELETE' });
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('usuarioDemo');
-        sessionStorage.removeItem('descripcionDemo');
+        const respuesta = await apiFetch('/perfil', { method: 'DELETE' });
+        limpiarSesion();
+        avisoSiguientePagina(respuesta.mensaje || 'Tu cuenta fue eliminada.', 'info');
         window.location.href = 'Login.html';
     } catch (error) {
-        alert(error.message);
+        mostrarAlerta(error.message);
+        bloquearBoton(boton, false);
     }
 });
 
@@ -143,6 +164,7 @@ async function cargarFavoritos() {
         const favoritos = await apiFetch('/favoritos');
         renderizarFavoritos(favoritos);
     } catch (error) {
+        if (error.status === 401) return; // cargarPerfil ya redirige al Login
         estadoFavoritos.textContent = 'No se pudieron cargar los favoritos: ' + error.message;
     }
 }
@@ -151,11 +173,14 @@ async function quitarFavorito(juegoId, nombreJuego) {
     try {
         const respuesta = await apiFetch(`/favoritos/${juegoId}`, { method: 'DELETE' });
         renderizarFavoritos(respuesta.favoritos);
-        estadoFavoritos.textContent = `Se quitó "${nombreJuego}" de tus favoritos.`;
+        mostrarAlerta(`Se quitó "${nombreJuego}" de tus favoritos.`, 'success');
     } catch (error) {
-        estadoFavoritos.textContent = 'Error al quitar favorito: ' + error.message;
+        mostrarAlerta('Error al quitar favorito: ' + error.message);
     }
 }
 
-cargarPerfil();
-cargarFavoritos();
+// Perfil solo se puede ver con sesión iniciada
+if (requiereSesion()) {
+    cargarPerfil();
+    cargarFavoritos();
+}
