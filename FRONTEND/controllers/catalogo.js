@@ -1,3 +1,5 @@
+// Administrar solo se puede ver con sesión iniciada
+requiereSesion();
 // ---------- Datos del prototipo ----------
 let juegos = [{nombre: 'Gato Jump', categoria: 'Arcade'}, {nombre: 'Atrapa la estrella', categoria: 'Arcade'}, {nombre: 'Esquiva bloques', categoria: 'Arcade'}];
 let editando = -1;

@@ -11,7 +11,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
 
-    <script src="../controllers/prototipo.js"></script>
 
     <style>
         body {
@@ -222,7 +221,8 @@
             </div>
         </div>
     </main>
-
+    <!-- prototipo.js va antes del juego porque el juego usa apiFetch, sesionIniciada y mostrarAlerta -->
+    <script src="../controllers/prototipo.js"></script>
     <script>
         // =====================================================================
         //  MINI GAME WEB - estilo "dinosaurio de Google"
@@ -244,6 +244,7 @@
         const boton     = document.getElementById("boton");
         const puntajeEl = document.getElementById("puntaje");
         const recordEl  = document.getElementById("record");
+        const instrucciones = document.getElementById("instrucciones");
 
         // ---------- Constantes (juega con estos números) ----------
         const GRAVEDAD          = 2400; // px/s²  -> qué tan rápido cae
@@ -260,16 +261,22 @@
         let enemigoX = 0;        // posición horizontal del enemigo (px desde la izquierda)
         let velocidad = VELOCIDAD_INICIAL;
         let puntaje = 0;
-        let record = Number(leerRecord()) || 0;
+        let record = 0;
         let desplazamientoFondo = 0;
         let tiempoAnterior = 0;
 
+        // Con sesión el récord viene del servidor; como invitado se guarda en el navegador.
         async function cargarRecordInicial() {
+            if (!sesionIniciada()) {
+                record = Number(leerRecord()) || 0;
+                mostrarRecord();
+                return;
+            }
             try {
                 const datos = await apiFetch('/rankings/gato');
                 record = datos.mejorPuntaje || 0;
-            } catch {
-                record = Number(localStorage.getItem("recordMiniGame")) || 0;
+            } catch (error) {
+                mostrarAlerta('No se pudo cargar tu récord: ' + error.message);
             }
             mostrarRecord();
         }
@@ -323,6 +330,16 @@
             instrucciones.textContent = `Puntaje: ${puntajeFinal}. Guardando resultado...`;
             mensaje.classList.remove("oculto");
 
+            if (!sesionIniciada()) {
+                if (puntajeFinal > record) {
+                    record = puntajeFinal;
+                    guardarRecord(record);
+                    mostrarRecord();
+                }
+                instrucciones.textContent = `Puntaje final: ${puntajeFinal} pts. Inicia sesión para aparecer en las clasificaciones.`;
+                return;
+            }
+
             try {
                 const res = await apiFetch('/rankings', {
                     method: 'POST',
@@ -333,13 +350,9 @@
                 instrucciones.textContent = res.nuevoRecord
                     ? `¡Nuevo récord: ${puntajeFinal} pts! Puesto #${res.posicionActual} en la clasificación.`
                     : `Puntaje: ${puntajeFinal} pts · Puesto actual: #${res.posicionActual}`;
-            } catch {
-                if (puntajeFinal > record) {
-                    record = puntajeFinal;
-                    localStorage.setItem("recordMiniGame", record);
-                    mostrarRecord();
-                }
+            } catch (error) {
                 instrucciones.textContent = `Puntaje final: ${puntajeFinal} pts`;
+                mostrarAlerta('No se pudo guardar tu puntuación: ' + error.message);
             }
         }
 
@@ -448,7 +461,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-<script src="../controllers/prototipo.js"></script>
 </body>
 
 </html>

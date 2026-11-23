@@ -12,15 +12,20 @@ let tiempo = 20;
 let reloj;
 let record = 0;
 
+// Con sesión el récord viene del servidor; como invitado se guarda en el navegador.
 async function cargarRecordInicial() {
+    if (!sesionIniciada()) {
+        record = Number(localStorage.getItem('recordAtrapa')) || 0;
+        recordEl.textContent = record;
+        return;
+    }
     try {
         const datos = await apiFetch('/rankings/atrapa');
         record = datos.mejorPuntaje || 0;
-        recordEl.textContent = record;
-    } catch {
-        record = Number(localStorage.getItem('recordAtrapa')) || 0;
-        recordEl.textContent = record;
+    } catch (error) {
+        mostrarAlerta('No se pudo cargar tu récord: ' + error.message);
     }
+    recordEl.textContent = record;
 }
 
 botonJugar.addEventListener('click', iniciar);
@@ -62,6 +67,16 @@ async function terminar() {
     estrella.hidden = true;
     estado.textContent = `¡Tiempo! Tu puntaje fue de ${puntaje}. Guardando resultado...`;
 
+    if (!sesionIniciada()) {
+        if (puntaje > record) {
+            record = puntaje;
+            localStorage.setItem('recordAtrapa', record);
+            recordEl.textContent = record;
+        }
+        estado.textContent = `¡Tiempo! Tu puntaje fue de ${puntaje}. Inicia sesión para aparecer en las clasificaciones.`;
+        return;
+    }
+
     try {
         const res = await apiFetch('/rankings', {
             method: 'POST',
@@ -72,13 +87,9 @@ async function terminar() {
         estado.textContent = res.nuevoRecord
             ? `¡Nuevo récord personal: ${puntaje} pts! Ahora estás en el puesto #${res.posicionActual}.`
             : `Puntaje: ${puntaje} pts. Tu récord sigue en ${record} pts (Puesto #${res.posicionActual}).`;
-    } catch {
-        if (puntaje > record) {
-            record = puntaje;
-            localStorage.setItem('recordAtrapa', record);
-            recordEl.textContent = record;
-        }
+    } catch (error) {
         estado.textContent = `¡Tiempo! Tu puntaje fue de ${puntaje}.`;
+        mostrarAlerta('No se pudo guardar tu puntuación: ' + error.message);
     }
 }
 
