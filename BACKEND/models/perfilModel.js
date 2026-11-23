@@ -43,7 +43,11 @@ const PerfilModel = {
             descripcion: usuario.descripcion,
             avatar: usuario.avatar,
             esPropio: usuario.id === usuarioActualId,
-            favoritos: FavoritoModel.obtenerTodos(usuario.id)
+            favoritos: FavoritoModel.obtenerTodos(usuario.id),
+            puntajes: db.juegos.map(juego => {
+                const marca = db.puntuaciones.find(p => p.usuarioId === usuario.id && p.juegoId === juego.id);
+                return { juego: juego.nombre, puntos: marca ? marca.puntuacion : null };
+            })
         };
     },
 
