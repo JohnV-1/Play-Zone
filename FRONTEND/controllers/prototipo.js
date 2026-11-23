@@ -33,7 +33,29 @@ function requiereSesion() {
 }
 
 // ---------- Peticiones al backend ----------
+let solicitudesActivas = 0;
 async function apiFetch(endpoint, opciones = {}) {
+    let estado = document.getElementById('estadoPeticiones');
+    if (!estado) {
+        estado = document.createElement('div');
+        estado.id = 'estadoPeticiones';
+        estado.className = 'position-fixed bottom-0 end-0 m-3 px-3 py-2 bg-dark text-white rounded shadow';
+        estado.style.zIndex = '2100';
+        estado.setAttribute('role', 'status');
+        document.body.append(estado);
+    }
+    solicitudesActivas++;
+    estado.hidden = false;
+    estado.textContent = 'Cargando…';
+    try {
+        return await solicitarDatos(endpoint, opciones);
+    } finally {
+        solicitudesActivas--;
+        estado.hidden = solicitudesActivas === 0;
+    }
+}
+
+async function solicitarDatos(endpoint, opciones) {
     const token = sessionStorage.getItem('token');
     const headers = {
         'Content-Type': 'application/json',

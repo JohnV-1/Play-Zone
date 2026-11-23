@@ -44,6 +44,18 @@ async function cargarPerfil() {
             estadoFavoritos.textContent = `Juegos guardados por ${perfil.nombre}.`;
         }
 
+        const seccion = document.createElement('section');
+        seccion.className = 'panel mx-4 my-4';
+        const titulo = document.createElement('h2');
+        titulo.textContent = 'Récords por juego';
+        const lista = document.createElement('ul');
+        for (const marca of perfil.puntajes || []) {
+            const fila = document.createElement('li');
+            fila.textContent = marca.juego + ': ' + (marca.puntos === null ? 'Sin puntuación' : marca.puntos + ' puntos');
+            lista.append(fila);
+        }
+        seccion.append(titulo, lista);
+        contenedorFavoritos.closest('section').after(seccion);
         renderizarFavoritos(perfil.favoritos || [], perfil.esPropio);
     } catch (error) {
         if (error.status === 401) {
@@ -205,3 +217,4 @@ async function quitarFavorito(juegoId, nombreJuego) {
 if (usuarioConsultado || requiereSesion()) {
     cargarPerfil();
 }
+
