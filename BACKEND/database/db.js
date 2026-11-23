@@ -1,4 +1,12 @@
+// Base de datos en memoria (temporal para la Entrega 3).
+// En la entrega final esta información se guardará en MongoDB Atlas.
+// Al reiniciar el servidor, todo vuelve a estos valores iniciales.
+
+const AVATAR_DEFAULT = 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png';
+
 const db = {
+    AVATAR_DEFAULT,
+
     juegos: [
         {
             id: 'gato',
@@ -28,31 +36,46 @@ const db = {
             pagina: 'Game_03.html'
         }
     ],
-    perfil: {
-        id: 1,
-        nombre: 'David',
-        descripcion: 'Me gustan los juegos casuales y mejorar mis récords.',
-        avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png'
-    },
-    favoritosIds: ['gato'],
+
+    // Usuarios de prueba. Las contraseñas están en texto plano SOLO en este avance;
+    // en la entrega final se guardarán cifradas (bcrypt) en MongoDB.
+    usuarios: [
+        { id: 1, nombre: 'David', email: 'david@playzone.com', password: '123456', descripcion: 'Me gustan los juegos casuales y mejorar mis récords.', avatar: AVATAR_DEFAULT },
+        { id: 2, nombre: 'John', email: 'john@p.com', password: '123456', descripcion: 'Holaaaaaa', avatar: AVATAR_DEFAULT },
+        { id: 3, nombre: 'Luna', email: 'luna@playzone.com', password: '123456', descripcion: '', avatar: AVATAR_DEFAULT },
+        { id: 4, nombre: 'RetroMax', email: 'retromax@playzone.com', password: '123456', descripcion: '', avatar: AVATAR_DEFAULT },
+        { id: 5, nombre: 'Astro', email: 'astro@playzone.com', password: '123456', descripcion: '', avatar: AVATAR_DEFAULT }
+    ],
+    siguienteUsuarioId: 6,
+
+    // token -> id del usuario que inició sesión
+    sesiones: {},
+
+    // Cada favorito pertenece a un usuario
+    favoritos: [
+        { usuarioId: 1, juegoId: 'gato' }
+    ],
+
+    // Una puntuación (el récord) por usuario y por juego.
+    // El nombre y avatar se toman del usuario, así siempre están actualizados.
     puntuaciones: [
         // Gato Jump
-        { juegoId: 'gato', usuarioId: 2, nombre: 'Nova', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 420, fecha: '18 nov 2026' },
-        { juegoId: 'gato', usuarioId: 3, nombre: 'Luna', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 310, fecha: '19 nov 2026' },
-        { juegoId: 'gato', usuarioId: 1, nombre: 'David', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 250, fecha: '20 nov 2026' },
-        { juegoId: 'gato', usuarioId: 4, nombre: 'RetroMax', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 180, fecha: '21 nov 2026' },
+        { juegoId: 'gato', usuarioId: 2, puntuacion: 420, fecha: '18 nov 2026' },
+        { juegoId: 'gato', usuarioId: 3, puntuacion: 310, fecha: '19 nov 2026' },
+        { juegoId: 'gato', usuarioId: 1, puntuacion: 250, fecha: '20 nov 2026' },
+        { juegoId: 'gato', usuarioId: 4, puntuacion: 180, fecha: '21 nov 2026' },
 
         // Atrapa la estrella
-        { juegoId: 'atrapa', usuarioId: 3, nombre: 'Luna', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 240, fecha: '19 nov 2026' },
-        { juegoId: 'atrapa', usuarioId: 1, nombre: 'David', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 190, fecha: '20 nov 2026' },
-        { juegoId: 'atrapa', usuarioId: 5, nombre: 'Astro', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 150, fecha: '21 nov 2026' },
-        { juegoId: 'atrapa', usuarioId: 2, nombre: 'Nova', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 120, fecha: '21 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 3, puntuacion: 240, fecha: '19 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 1, puntuacion: 190, fecha: '20 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 5, puntuacion: 150, fecha: '21 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 2, puntuacion: 120, fecha: '21 nov 2026' },
 
         // Esquiva bloques
-        { juegoId: 'esquiva', usuarioId: 1, nombre: 'David', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 350, fecha: '20 nov 2026' },
-        { juegoId: 'esquiva', usuarioId: 4, nombre: 'RetroMax', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 290, fecha: '20 nov 2026' },
-        { juegoId: 'esquiva', usuarioId: 2, nombre: 'Nova', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 210, fecha: '21 nov 2026' },
-        { juegoId: 'esquiva', usuarioId: 5, nombre: 'Astro', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 140, fecha: '22 nov 2026' }
+        { juegoId: 'esquiva', usuarioId: 1, puntuacion: 350, fecha: '20 nov 2026' },
+        { juegoId: 'esquiva', usuarioId: 4, puntuacion: 290, fecha: '20 nov 2026' },
+        { juegoId: 'esquiva', usuarioId: 2, puntuacion: 210, fecha: '21 nov 2026' },
+        { juegoId: 'esquiva', usuarioId: 5, puntuacion: 140, fecha: '22 nov 2026' }
     ]
 };
 
