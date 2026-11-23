@@ -1,10 +1,30 @@
 const PerfilModel = require('../models/perfilModel');
 
-// Todas estas rutas usan AuthController.requiereSesion, así que req.usuario siempre existe.
 const PerfilController = {
+    // GET /api/perfil (requiere sesión): tu perfil completo, con correo y favoritos
     obtenerPerfil(req, res) {
-        res.json(PerfilModel.sinPassword(req.usuario));
+        res.json({
+            ...PerfilModel.obtenerPublico(req.usuario.id, req.usuario.id),
+            email: req.usuario.email
+        });
     },
+
+    // GET /api/perfil/:id (sesión opcional): perfil público de cualquier jugador
+    obtenerPerfilPorId(req, res) {
+        const id = Number(req.params.id);
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({ ok: false, mensaje: 'El id de usuario no es válido.' });
+        }
+
+        const usuarioActualId = req.usuario ? req.usuario.id : null;
+        const perfil = PerfilModel.obtenerPublico(id, usuarioActualId);
+        if (!perfil) {
+            return res.status(404).json({ ok: false, mensaje: 'Usuario no encontrado.' });
+        }
+        res.json(perfil);
+    },
+
+    // Las siguientes rutas usan AuthController.requiereSesion, así que req.usuario siempre existe.
 
     actualizarPerfil(req, res) {
         const { nombre, descripcion } = req.body || {};

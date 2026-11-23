@@ -91,16 +91,21 @@
                 <div>
                     <h1 id="nombrePerfil">Cargando perfil...</h1>
                     <p id="descripcionPerfil"></p>
-                    <button class="btn" style="background: #050B1A;" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">
-                        <i class="bi bi-pencil-fill me-2"></i>Editar perfil
-                    </button>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button id="btnEditarPerfil" class="btn" style="background: #050B1A;" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">
+                            <i class="bi bi-pencil-fill me-2"></i>Editar perfil
+                        </button>
+                        <a id="btnVolverClasificaciones" href="Clasificaciones.html" class="btn d-none" style="background: #050B1A;">
+                            <i class="bi bi-arrow-left me-2"></i>Volver a clasificaciones
+                        </a>
+                    </div>
                 </div>
             </section>
 
             <section class="panel mx-4 my-4">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                     <div>
-                        <h2 class="mb-1">Mis juegos favoritos</h2>
+                        <h2 id="tituloFavoritosPerfil" class="mb-1">Mis juegos favoritos</h2>
                         <p id="estadoFavoritosPerfil" class="demo-note mb-0" role="status">
                             Administra tus juegos guardados o agrega más desde el catálogo.
                         </p>
@@ -110,10 +115,12 @@
 
                 <div id="misFavoritos" class="row g-3"></div>
 
-                <hr class="my-4">
-                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminarCuentaModal">
-                    Eliminar cuenta
-                </button>
+                <div id="seccionEliminarCuenta">
+                    <hr class="my-4">
+                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminarCuentaModal">
+                        Eliminar cuenta
+                    </button>
+                </div>
             </section>
 
             <div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="tituloEditarPerfil" aria-hidden="true">

@@ -21,6 +21,7 @@ const RankingModel = {
                 const usuario = db.usuarios.find((u) => u.id === item.usuarioId);
                 if (!usuario) return null; // usuario eliminado
                 return {
+                    usuarioId: usuario.id,
                     nombre: usuario.nombre,
                     avatar: usuario.avatar,
                     puntuacion: item.puntuacion,

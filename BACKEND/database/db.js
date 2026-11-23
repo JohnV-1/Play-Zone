@@ -51,9 +51,9 @@ const db = {
     usuarios: [
         { id: 1, nombre: 'David', email: 'david@playzone.com', password: '123456', descripcion: 'Me gustan los juegos casuales y mejorar mis récords.', avatar: AVATAR_DEFAULT },
         { id: 2, nombre: 'John', email: 'john@p.com', password: '123456', descripcion: 'Holaaaaaa', avatar: AVATAR_DEFAULT },
-        { id: 3, nombre: 'Luna', email: 'luna@playzone.com', password: '123456', descripcion: '', avatar: AVATAR_DEFAULT },
-        { id: 4, nombre: 'RetroMax', email: 'retromax@playzone.com', password: '123456', descripcion: '', avatar: AVATAR_DEFAULT },
-        { id: 5, nombre: 'Astro', email: 'astro@playzone.com', password: '123456', descripcion: '', avatar: AVATAR_DEFAULT }
+        { id: 3, nombre: 'Luna', email: 'luna@playzone.com', password: '123456', descripcion: 'Especialista en reflejos rápidos y estrellas fugaces.', avatar: 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png' },
+        { id: 4, nombre: 'RetroMax', email: 'retromax@playzone.com', password: '123456', descripcion: 'Fanático de los clásicos arcade de los 80 y 90.', avatar: 'https://cdn-icons-png.flaticon.com/512/4140/4140037.png' },
+        { id: 5, nombre: 'Astro', email: 'astro@playzone.com', password: '123456', descripcion: 'Explorando cada minijuego de Play Zone.', avatar: 'https://cdn-icons-png.flaticon.com/512/4140/4140051.png' }
     ],
     siguienteUsuarioId: 6,
 
@@ -62,7 +62,14 @@ const db = {
 
     // Cada favorito pertenece a un usuario
     favoritos: [
-        { usuarioId: 1, juegoId: 'gato' }
+        { usuarioId: 1, juegoId: 'gato' },
+        { usuarioId: 2, juegoId: 'gato' },
+        { usuarioId: 2, juegoId: 'atrapa' },
+        { usuarioId: 3, juegoId: 'atrapa' },
+        { usuarioId: 3, juegoId: 'esquiva' },
+        { usuarioId: 4, juegoId: 'gato' },
+        { usuarioId: 4, juegoId: 'esquiva' },
+        { usuarioId: 5, juegoId: 'esquiva' }
     ],
 
     // Una puntuación (el récord) por usuario y por juego.

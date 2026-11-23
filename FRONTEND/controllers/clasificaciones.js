@@ -20,6 +20,14 @@ function formatearPuntaje(valor) {
     return Number(valor || 0).toLocaleString('es-MX');
 }
 
+function abrirPerfilUsuario(filaDatos) {
+    if (filaDatos.esUsuarioActual) {
+        window.location.href = 'Perfil.html';
+    } else {
+        window.location.href = `Perfil.html?usuario=${filaDatos.usuarioId}`;
+    }
+}
+
 function renderizarTabla(tabla) {
     rankingBody.innerHTML = '';
 
@@ -36,9 +44,13 @@ function renderizarTabla(tabla) {
 
     tabla.forEach((filaDatos) => {
         const tr = document.createElement('tr');
+        tr.className = 'clickable-row';
+        tr.title = `Ver perfil de ${filaDatos.nombre}`;
         if (filaDatos.esUsuarioActual) {
-            tr.className = 'current-player';
+            tr.classList.add('current-player');
         }
+
+        tr.addEventListener('click', () => abrirPerfilUsuario(filaDatos));
 
         // Posición
         const tdPos = document.createElement('td');
@@ -56,11 +68,17 @@ function renderizarTabla(tabla) {
         img.className = 'rounded-pill';
         tdAvatar.appendChild(img);
 
-        // Nombre
+        // Nombre con enlace accesible
         const tdNombre = document.createElement('td');
-        tdNombre.textContent = filaDatos.esUsuarioActual
+        const enlacePerfil = document.createElement('a');
+        enlacePerfil.href = filaDatos.esUsuarioActual
+            ? 'Perfil.html'
+            : `Perfil.html?usuario=${filaDatos.usuarioId}`;
+        enlacePerfil.className = 'text-white text-decoration-none fw-semibold';
+        enlacePerfil.textContent = filaDatos.esUsuarioActual
             ? `${filaDatos.nombre} (Tú)`
             : filaDatos.nombre;
+        tdNombre.appendChild(enlacePerfil);
 
         // Puntuación
         const tdPuntos = document.createElement('td');
@@ -84,7 +102,6 @@ async function cargarRanking(juegoId) {
         const datos = await apiFetch(`/rankings/${juegoId}`);
         const { juego, tabla, mejorPuntaje, posicionActual } = datos;
 
-        // Actualizar encabezado y enlaces de juego
         tituloJuegoRanking.textContent = juego.nombre;
         descJuegoRanking.textContent = juego.descripcion;
         btnJugarHero.href = juego.pagina;
@@ -92,18 +109,15 @@ async function cargarRanking(juegoId) {
         imagenJuegoPanel.src = juego.imagen;
         imagenJuegoPanel.alt = juego.nombre;
 
-        // Actualizar tabla
         renderizarTabla(tabla);
 
-        // Actualizar panel lateral del usuario
         mejorPuntajeEl.textContent = formatearPuntaje(mejorPuntaje);
         posicionActualEl.innerHTML = posicionActual
             ? `Posición <strong>#${posicionActual}</strong>`
             : 'Sin clasificación aún';
 
-        estadoRanking.textContent = '';
+        estadoRanking.textContent = 'Haz clic sobre cualquier jugador para ver su perfil.';
 
-        // Sincronizar parámetro en la URL sin recargar
         const url = new URL(window.location);
         url.searchParams.set('juego', juegoId);
         window.history.replaceState({}, '', url);

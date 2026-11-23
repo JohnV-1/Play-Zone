@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const db = require('../database/db');
+const FavoritoModel = require('./favoritoModel');
 
 // ---------- Validaciones (reglas de los datos del usuario) ----------
 
@@ -29,6 +30,21 @@ const PerfilModel = {
 
     obtenerPorId(id) {
         return db.usuarios.find((u) => u.id === id) || null;
+    },
+
+    // Datos públicos de un jugador (sin correo ni contraseña) y sus favoritos.
+    // usuarioActualId es el usuario con sesión (o null) para saber si es su propio perfil.
+    obtenerPublico(id, usuarioActualId = null) {
+        const usuario = this.obtenerPorId(Number(id));
+        if (!usuario) return null;
+        return {
+            id: usuario.id,
+            nombre: usuario.nombre,
+            descripcion: usuario.descripcion,
+            avatar: usuario.avatar,
+            esPropio: usuario.id === usuarioActualId,
+            favoritos: FavoritoModel.obtenerTodos(usuario.id)
+        };
     },
 
     obtenerPorEmail(email) {

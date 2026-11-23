@@ -1,6 +1,10 @@
 const avatarPerfil = document.getElementById('avatarPerfil');
 const nombrePerfil = document.getElementById('nombrePerfil');
 const descripcionPerfil = document.getElementById('descripcionPerfil');
+const btnEditarPerfil = document.getElementById('btnEditarPerfil');
+const btnVolverClasificaciones = document.getElementById('btnVolverClasificaciones');
+const seccionEliminarCuenta = document.getElementById('seccionEliminarCuenta');
+const tituloFavoritosPerfil = document.getElementById('tituloFavoritosPerfil');
 const editarNombre = document.getElementById('editarNombre');
 const editarDescripcion = document.getElementById('editarDescripcion');
 const modalPerfilEl = document.getElementById('editarPerfilModal');
@@ -8,16 +12,39 @@ const modalPerfil = new bootstrap.Modal(modalPerfilEl);
 const contenedorFavoritos = document.getElementById('misFavoritos');
 const estadoFavoritos = document.getElementById('estadoFavoritosPerfil');
 
+// Perfil.html?usuario=3 muestra el perfil de otro jugador (se abre desde Clasificaciones)
+const usuarioConsultado = new URLSearchParams(window.location.search).get('usuario');
+
+// Muestra u oculta los botones que solo tienen sentido en tu propio perfil
+function mostrarControlesPropios(esPropio) {
+    btnEditarPerfil.classList.toggle('d-none', !esPropio);
+    seccionEliminarCuenta.classList.toggle('d-none', !esPropio);
+    btnVolverClasificaciones.classList.toggle('d-none', esPropio);
+}
+
 async function cargarPerfil() {
     try {
-        const perfil = await apiFetch('/perfil');
+        const endpoint = usuarioConsultado ? `/perfil/${encodeURIComponent(usuarioConsultado)}` : '/perfil';
+        const perfil = await apiFetch(endpoint);
+
         nombrePerfil.textContent = perfil.nombre;
         descripcionPerfil.textContent = perfil.descripcion;
         if (perfil.avatar && avatarPerfil) {
             avatarPerfil.src = perfil.avatar;
         }
-        sessionStorage.setItem('usuario', perfil.nombre);
-        actualizarNombreNavbar(perfil.nombre);
+
+        mostrarControlesPropios(perfil.esPropio);
+        if (perfil.esPropio) {
+            tituloFavoritosPerfil.textContent = 'Mis juegos favoritos';
+            estadoFavoritos.textContent = 'Administra tus juegos guardados o agrega más desde el catálogo.';
+            sessionStorage.setItem('usuario', perfil.nombre);
+            actualizarNombreNavbar(perfil.nombre);
+        } else {
+            tituloFavoritosPerfil.textContent = `Favoritos de ${perfil.nombre}`;
+            estadoFavoritos.textContent = `Juegos guardados por ${perfil.nombre}.`;
+        }
+
+        renderizarFavoritos(perfil.favoritos || [], perfil.esPropio);
     } catch (error) {
         if (error.status === 401) {
             // La sesión ya no es válida (ej. se reinició el servidor)
@@ -25,8 +52,9 @@ async function cargarPerfil() {
             window.location.href = 'Login.html';
             return;
         }
-        nombrePerfil.textContent = 'Error al cargar perfil';
+        nombrePerfil.textContent = usuarioConsultado ? 'Usuario no encontrado' : 'Error al cargar perfil';
         descripcionPerfil.textContent = error.message;
+        mostrarControlesPropios(false);
         mostrarAlerta(error.message);
     }
 }
@@ -83,14 +111,16 @@ document.getElementById('confirmarEliminarCuenta').addEventListener('click', asy
     }
 });
 
-function renderizarFavoritos(lista) {
+function renderizarFavoritos(lista, esPropio) {
     contenedorFavoritos.innerHTML = '';
 
     if (!lista.length) {
         contenedorFavoritos.className = '';
         const aviso = document.createElement('p');
         aviso.className = 'text-secondary mb-0';
-        aviso.textContent = 'Aún no tienes juegos favoritos. Entra a Detalles de cualquier juego para agregarlo.';
+        aviso.textContent = esPropio
+            ? 'Aún no tienes juegos favoritos. Entra a Detalles de cualquier juego para agregarlo.'
+            : 'Este jugador aún no tiene juegos favoritos.';
         contenedorFavoritos.appendChild(aviso);
         return;
     }
@@ -104,25 +134,27 @@ function renderizarFavoritos(lista) {
         const card = document.createElement('div');
         card.className = 'card card-juego h-100 shadow-sm position-relative';
 
-        // Botón de corazón en la esquina superior derecha para quitar de favoritos
-        const btnFav = document.createElement('button');
-        btnFav.type = 'button';
-        btnFav.className = 'btn-fav position-absolute top-0 end-0 m-2';
-        btnFav.title = 'Quitar de favoritos';
-        btnFav.setAttribute('aria-label', `Quitar ${juego.nombre} de favoritos`);
+        // Solo muestra el botón para quitar favorito si es tu propio perfil
+        if (esPropio) {
+            const btnFav = document.createElement('button');
+            btnFav.type = 'button';
+            btnFav.className = 'btn-fav position-absolute top-0 end-0 m-2';
+            btnFav.title = 'Quitar de favoritos';
+            btnFav.setAttribute('aria-label', `Quitar ${juego.nombre} de favoritos`);
 
-        const iconoCorazon = document.createElement('i');
-        iconoCorazon.className = 'bi bi-heart-fill';
-        btnFav.appendChild(iconoCorazon);
-        btnFav.addEventListener('click', () => quitarFavorito(juego.id, juego.nombre));
+            const iconoCorazon = document.createElement('i');
+            iconoCorazon.className = 'bi bi-heart-fill';
+            btnFav.appendChild(iconoCorazon);
+            btnFav.addEventListener('click', () => quitarFavorito(juego.id, juego.nombre));
 
-        // Imagen superior idéntica a Home.html
+            card.appendChild(btnFav);
+        }
+
         const img = document.createElement('img');
         img.src = juego.imagen;
         img.className = 'card-img-top';
         img.alt = juego.nombre;
 
-        // Cuerpo de la tarjeta idéntico a Home.html
         const cardBody = document.createElement('div');
         cardBody.className = 'card-body d-flex flex-column p-3';
 
@@ -153,34 +185,23 @@ function renderizarFavoritos(lista) {
 
         pieTarjeta.append(badge, linkDetalles, btnPlay);
         cardBody.append(titulo, pieTarjeta);
-        card.append(btnFav, img, cardBody);
+        card.append(img, cardBody);
         col.appendChild(card);
         contenedorFavoritos.appendChild(col);
     });
 }
 
-async function cargarFavoritos() {
-    try {
-        const favoritos = await apiFetch('/favoritos');
-        renderizarFavoritos(favoritos);
-    } catch (error) {
-        if (error.status === 401) return; // cargarPerfil ya redirige al Login
-        estadoFavoritos.textContent = 'No se pudieron cargar los favoritos: ' + error.message;
-    }
-}
-
 async function quitarFavorito(juegoId, nombreJuego) {
     try {
         const respuesta = await apiFetch(`/favoritos/${juegoId}`, { method: 'DELETE' });
-        renderizarFavoritos(respuesta.favoritos);
+        renderizarFavoritos(respuesta.favoritos, true);
         mostrarAlerta(`Se quitó "${nombreJuego}" de tus favoritos.`, 'success');
     } catch (error) {
         mostrarAlerta('Error al quitar favorito: ' + error.message);
     }
 }
 
-// Perfil solo se puede ver con sesión iniciada
-if (requiereSesion()) {
+// El perfil de otro jugador es público; el tuyo (sin ?usuario=) requiere sesión
+if (usuarioConsultado || requiereSesion()) {
     cargarPerfil();
-    cargarFavoritos();
 }
