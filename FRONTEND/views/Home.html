@@ -48,7 +48,7 @@
     <!-- Bootstrap CSS v5.3.8 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
-<link rel="stylesheet" href="../assets/David.css">
+    <link rel="stylesheet" href="../assets/David.css">
 </head>
 
 <body class="fondo2">
@@ -137,16 +137,33 @@
 
         </div>
         <br>
-        <section class="container-fluid mb-4"><div class="row g-3 align-items-end"><div class="col-md-8"><label for="buscarJuego" class="form-label">Buscar juegos</label><input class="form-control" id="buscarJuego" placeholder="Buscar por nombre"></div><div class="col-md-4"><label for="filtroCategoria" class="form-label">Categoría</label><select id="filtroCategoria" class="form-select"><option value="">Todas</option><option>Arcade</option><option>Aventura</option><option>Rol</option><option>Fantasia</option><option>Plataformas</option><option>Horror</option><option>Accion</option></select></div></div><p id="sinResultados" class="mt-3 d-none" role="status">No hay juegos con esos filtros.</p></section>
+        <section class="container-fluid mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-8"><label for="buscarJuego" class="form-label">Buscar juegos</label><input
+                        class="form-control" id="buscarJuego" placeholder="Buscar por nombre"></div>
+                <div class="col-md-4"><label for="filtroCategoria" class="form-label">Categoría</label><select
+                        id="filtroCategoria" class="form-select">
+                        <option value="">Todas</option>
+                        <option>Arcade</option>
+                        <option>Aventura</option>
+                        <option>Rol</option>
+                        <option>Fantasia</option>
+                        <option>Plataformas</option>
+                        <option>Horror</option>
+                        <option>Accion</option>
+                    </select></div>
+            </div>
+            <p id="sinResultados" class="mt-3 d-none" role="status">No hay juegos con esos filtros.</p>
+        </section>
         <div class="row g-3 mx-1" id="catalogo">
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card card-juego h-100 shadow-sm">
-                    <img src="../assets/imagenes/Juego1.png"
-                        class="card-img-top" alt="Gato Jump">
+                    <img src="../assets/imagenes/Juego1.png" class="card-img-top" alt="Gato Jump">
                     <div class="card-body d-flex flex-column p-3">
                         <h6 class="card-title text-white fw-bold mb-2">Gato Jump</h6>
                         <div class="mt-auto">
-                            <span class="badge badge-categoria px-2 py-1">Arcade</span> <a href="Detalle.html?juego=gato" class="small">Detalles</a>
+                            <span class="badge badge-categoria px-2 py-1">Arcade</span> <a
+                                href="Detalle.html?juego=gato" class="small">Detalles</a>
                             <a href="Game_01.html" class="btn-play" aria-label="Jugar Gato Jump">
                                 <i class="bi bi-play-fill"></i>
                             </a>
@@ -154,8 +171,40 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3"><div class="card card-juego h-100 shadow-sm"><div class="arcade-cover" aria-label="Objetivo de Atrapa la estrella">★</div><div class="card-body d-flex flex-column p-3"><h6 class="card-title text-white fw-bold mb-2">Atrapa la estrella</h6><div class="mt-auto"><span class="badge badge-categoria px-2 py-1">Arcade</span> <a href="Detalle.html?juego=atrapa" class="small">Detalles</a><a href="Game_02.html" class="btn-play" aria-label="Jugar Atrapa la estrella">▶</a></div></div></div></div>
-<div class="col-12 col-sm-6 col-md-4 col-lg-3"><div class="card card-juego h-100 shadow-sm"><div class="arcade-cover" aria-label="Esquiva bloques">▲ &nbsp; ▣</div><div class="card-body d-flex flex-column p-3"><h6 class="card-title text-white fw-bold mb-2">Esquiva bloques</h6><div class="mt-auto"><span class="badge badge-categoria px-2 py-1">Arcade</span> <a href="Detalle.html?juego=esquiva" class="small">Detalles</a><a href="Game_03.html" class="btn-play" aria-label="Jugar Esquiva bloques">▶</a></div></div></div></div>            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card card-juego h-100 shadow-sm">
+                    <div class="arcade-cover" aria-label="Gato Snake">■■■●</div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h6 class="card-title text-white fw-bold mb-2">Gato Snake</h6>
+                        <div class="mt-auto"><span class="badge badge-categoria px-2 py-1">Arcade</span> <a
+                                href="Detalle.html?juego=snake" class="small">Detalles</a><a href="Game_04.html"
+                                class="btn-play" aria-label="Jugar Gato Snake">▶</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card card-juego h-100 shadow-sm">
+                    <div class="arcade-cover" aria-label="Objetivo de Atrapa la estrella">★</div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h6 class="card-title text-white fw-bold mb-2">Atrapa la estrella</h6>
+                        <div class="mt-auto"><span class="badge badge-categoria px-2 py-1">Arcade</span> <a
+                                href="Detalle.html?juego=atrapa" class="small">Detalles</a><a href="Game_02.html"
+                                class="btn-play" aria-label="Jugar Atrapa la estrella">▶</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card card-juego h-100 shadow-sm">
+                    <div class="arcade-cover" aria-label="Esquiva bloques">▲ &nbsp; ▣</div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h6 class="card-title text-white fw-bold mb-2">Esquiva bloques</h6>
+                        <div class="mt-auto"><span class="badge badge-categoria px-2 py-1">Arcade</span> <a
+                                href="Detalle.html?juego=esquiva" class="small">Detalles</a><a href="Game_03.html"
+                                class="btn-play" aria-label="Jugar Esquiva bloques">▶</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card card-juego h-100 shadow-sm">
                     <img src="https://i.pinimg.com/736x/1c/19/f1/1c19f1babf0dff71f07947a84a126db4.jpg"
                         class="card-img-top" alt="The Legend of Zelda">
@@ -249,7 +298,9 @@
         </div>
 
         </div>
-    <p class="container-fluid demo-note mt-3">Catálogo de ejemplo. Gato Jump, Atrapa la estrella y Esquiva bloques están disponibles para jugar.</p><a href="Administrar.html" class="btn ms-3 mb-4">Administrar catálogo</a></main>
+        <p class="container-fluid demo-note mt-3">Catálogo de ejemplo. Gato Jump, Atrapa la estrella y Esquiva bloques
+            están disponibles para jugar.</p><a href="Administrar.html" class="btn ms-3 mb-4">Administrar catálogo</a>
+    </main>
     <footer>
         <!-- place footer here -->
     </footer>
@@ -257,7 +308,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-<script src="../controllers/prototipo.js"></script>
-<script src="../controllers/home.js"></script></body>
+    <script src="../controllers/prototipo.js"></script>
+    <script src="../controllers/home.js"></script>
+</body>
 
 </html>

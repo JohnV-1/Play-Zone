@@ -34,6 +34,15 @@ const db = {
             controles: 'Flechas izquierda y derecha o botones en pantalla.',
             imagen: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23131825'/><text x='50%25' y='54%25' font-size='85' text-anchor='middle' dominant-baseline='middle' fill='%239361ff'>▲ ▣</text></svg>",
             pagina: 'Game_03.html'
+        },
+        {
+            id: 'snake',
+            nombre: 'Gato Snake',
+            categoria: 'Arcade',
+            descripcion: 'Guía a la serpiente, come para crecer y no choques con las paredes ni contigo mismo.',
+            controles: 'Flechas, WASD, deslizar el dedo o botones en pantalla.',
+            imagen: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23131825'/><text x='50%25' y='54%25' font-size='70' text-anchor='middle' dominant-baseline='middle' fill='%239361ff'>■■■<tspan fill='%23facc15'>●</tspan></text></svg>",
+            pagina: 'Game_04.html'
         }
     ],
 

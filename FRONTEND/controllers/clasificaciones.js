@@ -9,7 +9,7 @@ const posicionActualEl = document.getElementById('posicionActual');
 const imagenJuegoPanel = document.getElementById('imagenJuegoPanel');
 const volverJuego = document.getElementById('volverJuego');
 
-const juegosValidos = ['gato', 'atrapa', 'esquiva'];
+const juegosValidos = ['gato', 'atrapa', 'esquiva', 'snake'];
 const solicitado = new URLSearchParams(window.location.search).get('juego');
 
 if (juegosValidos.includes(solicitado)) {

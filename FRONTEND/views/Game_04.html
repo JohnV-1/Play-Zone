@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="es" data-bs-theme="dark">
+
+<head>
+    <title>Gato Snake | Play Zone</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS v5.3.8 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+
+    <style>
+        body {
+            background-color: #202124;
+            color: #f1f1f1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        main {
+            flex: 1;                     /* ocupa el espacio que deja el navbar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        #contenedor {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* ---------- Marcador ---------- */
+        #marcador {
+            display: flex;
+            justify-content: flex-end;
+            gap: 24px;
+            font-family: monospace;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        #record {
+            color: #9aa0a6;
+        }
+
+        /* Parpadeo del puntaje cada 100 puntos */
+        .parpadeo {
+            animation: parpadeo 0.25s steps(1) 4;
+        }
+
+        @keyframes parpadeo {
+            50% {
+                visibility: hidden;
+            }
+        }
+
+        /* ---------- Escenario ---------- */
+        #juego {
+            position: relative;          /* el mensaje "absolute" se posiciona respecto a esto */
+            width: 100%;
+            aspect-ratio: 4 / 3;         /* el tablero es de 20 x 15 casillas */
+            overflow: hidden;
+            border-radius: 8px;
+            background-image: url("https://i.pinimg.com/1200x/05/3c/e7/053ce7904a14c3034503a792dd39d478.jpg");
+            background-size: cover;
+            background-position: center;
+            touch-action: none;          /* para que deslizar el dedo no haga scroll */
+        }
+
+        /* El canvas ocupa todo el escenario; ahí se dibuja la serpiente y la comida */
+        #tablero {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ---------- Pantalla de inicio / Game Over ---------- */
+        #mensaje {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.55);
+            padding: 16px;
+        }
+
+        #mensaje.oculto {
+            display: none;
+        }
+
+        #titulo {
+            font-family: monospace;
+            letter-spacing: 4px;
+        }
+
+        #botones {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        #botones .btn {
+            min-width: 120px;
+        }
+
+        /* ---------- Flechas en pantalla (para celular) ---------- */
+        #controles {
+            display: grid;
+            grid-template-columns: repeat(3, 56px);
+            grid-template-rows: repeat(2, 56px);
+            gap: 6px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        #controles button {
+            font-size: 1.4rem;
+        }
+
+        #arriba    { grid-column: 2; grid-row: 1; }
+        #izquierda { grid-column: 1; grid-row: 2; }
+        #abajo     { grid-column: 2; grid-row: 2; }
+        #derecha   { grid-column: 3; grid-row: 2; }
+    </style>
+<link rel="stylesheet" href="../assets/David.css">
+</head>
+
+<body>
+    <!-- PEGA AQUÍ el <header>...</header> completo de Game_01.html (es idéntico) -->
+    <header>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="Home.html">Play Zone</a>
+                <a href="Home.html" class="text-white text-decoration-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+                        class="bi bi-controller icono" viewBox="0 0 16 16">
+                        <path
+                            d="M11.5 6.027a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1m2.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1m-6.5-3h1v1h1v1h-1v1h-1v-1h-1v-1h1z" />
+                        <path
+                            d="M3.051 3.26a.5.5 0 0 1 .354-.613l1.932-.518a.5.5 0 0 1 .62.39c.655-.079 1.35-.117 2.043-.117.72 0 1.443.041 2.12.126a.5.5 0 0 1 .622-.399l1.932.518a.5.5 0 0 1 .306.729q.211.136.373.297c.408.408.78 1.05 1.095 1.772.32.733.599 1.591.805 2.466s.34 1.78.364 2.606c.024.816-.059 1.602-.328 2.21a1.42 1.42 0 0 1-1.445.83c-.636-.067-1.115-.394-1.513-.773-.245-.232-.496-.526-.739-.808-.126-.148-.25-.292-.368-.423-.728-.804-1.597-1.527-3.224-1.527s-2.496.723-3.224 1.527c-.119.131-.242.275-.368.423-.243.282-.494.575-.739.808-.398.38-.877.706-1.513.773a1.42 1.42 0 0 1-1.445-.83c-.27-.608-.352-1.395-.329-2.21.024-.826.16-1.73.365-2.606.206-.875.486-1.733.805-2.466.315-.722.687-1.364 1.094-1.772a2.3 2.3 0 0 1 .433-.335l-.028-.079zm2.036.412c-.877.185-1.469.443-1.733.708-.276.276-.587.783-.885 1.465a14 14 0 0 0-.748 2.295 12.4 12.4 0 0 0-.339 2.406c-.022.755.062 1.368.243 1.776a.42.42 0 0 0 .426.24c.327-.034.61-.199.929-.502.212-.202.4-.423.615-.674.133-.156.276-.323.44-.504C4.861 9.969 5.978 9.027 8 9.027s3.139.942 3.965 1.855c.164.181.307.348.44.504.214.251.403.472.615.674.318.303.601.468.929.503a.42.42 0 0 0 .426-.241c.18-.408.265-1.02.243-1.776a12.4 12.4 0 0 0-.339-2.406 14 14 0 0 0-.748-2.295c-.298-.682-.61-1.19-.885-1.465-.264-.265-.856-.523-1.733-.708-.85-.179-1.877-.27-2.913-.27s-2.063.091-2.913.27" />
+                    </svg>
+                </a>
+                <div class="d-flex ms-auto">
+                    <!-- En caso de poner un buscador aqui lo podemos poner -->
+                </div>
+                <a class="nav-link" href="Clasificaciones.html">Clasificaciones
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                        class="bi bi-bar-chart-line" viewBox="0 0 16 16"
+                        style="margin-bottom: 10px; margin-right: 20px;">
+                        <path
+                            d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-5 0v-3H2v3z" />
+                    </svg>
+                </a>
+                <a class="nav-link" href="Perfil.html">
+                    Perfil
+                    <img src="https://i.pinimg.com/736x/ac/13/74/ac137456b996efec340292a585eb6dc7.jpg" alt="Avatar Logo"
+                        style="width:40px; margin-right: 20px; margin-left: 5px;" class="rounded-pill">
+                </a>
+                <button type="button" class="btn" onClick="window.location.href='Login.html'" title="Cerrar Sesión">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+                        class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+                        <path fill-rule="evenodd"
+                            d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div id="contenedor">
+            <!-- Marcador -->
+            <div id="marcador">
+                <span>HI <strong id="record">00000</strong></span>
+                <span><strong id="puntaje">00000</strong></span>
+            </div>
+
+            <!-- Escenario -->
+            <div id="juego">
+                <canvas id="tablero" width="600" height="450"></canvas>
+
+                <!-- Imágenes que se dibujan en el canvas (no se muestran directamente) -->
+                <img id="imgCabeza" src="https://static.vecteezy.com/system/resources/previews/027/517/539/non_2x/pixel-art-walking-burmese-cat-character-png.png" alt="" hidden>
+                <img id="imgComida" src="https://cdn-icons-png.flaticon.com/512/1685/1685445.png" alt="" hidden>
+
+                <!-- Pantalla de inicio y de Game Over -->
+                <div id="mensaje">
+                    <h2 id="titulo">GATO SNAKE</h2>
+                    <p id="instrucciones">Muévete con <kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd>, <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o deslizando el dedo. Come y no choques contigo mismo ni con las paredes.</p>
+                    <div id="botones">
+                        <button id="boton" type="button" class="btn btn-success">PLAY</button>
+                        <a href="Home.html" class="btn btn-primary">Inicio</a>
+                        <a href="Clasificaciones.html?juego=snake" class="btn btn-warning">Clasificaciones</a><a href="Detalle.html?juego=snake" class="btn">Detalles y reseñas</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flechas en pantalla -->
+            <div id="controles" aria-label="Controles de dirección">
+                <button id="arriba" type="button" class="btn btn-outline-light" aria-label="Arriba">▲</button>
+                <button id="izquierda" type="button" class="btn btn-outline-light" aria-label="Izquierda">◀</button>
+                <button id="abajo" type="button" class="btn btn-outline-light" aria-label="Abajo">▼</button>
+                <button id="derecha" type="button" class="btn btn-outline-light" aria-label="Derecha">▶</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- prototipo.js va antes del juego porque el juego usa apiFetch, sesionIniciada y mostrarAlerta -->
+    <script src="../controllers/prototipo.js"></script>
+    <script>
+        // =====================================================================
+        //  GATO SNAKE - estilo "viborita"
+        //  Idea general:
+        //    1. El tablero es una cuadrícula de COLUMNAS x FILAS casillas.
+        //    2. La serpiente es un arreglo de casillas {x, y}; la posición 0 es la cabeza.
+        //    3. Cada "paso" (cada pocos milisegundos) la cabeza avanza una casilla:
+        //         - si come, la serpiente crece (no se quita la cola)
+        //         - si no come, se quita la última casilla (la cola)
+        //    4. Si la cabeza choca con una pared o con su cuerpo: GAME OVER.
+        // =====================================================================
+
+        // ---------- Elementos del HTML ----------
+        const juego         = document.getElementById("juego");
+        const canvas        = document.getElementById("tablero");
+        const ctx           = canvas.getContext("2d");
+        const imgCabeza     = document.getElementById("imgCabeza");
+        const imgComida     = document.getElementById("imgComida");
+        const mensaje       = document.getElementById("mensaje");
+        const titulo        = document.getElementById("titulo");
+        const instrucciones = document.getElementById("instrucciones");
+        const boton         = document.getElementById("boton");
+        const puntajeEl     = document.getElementById("puntaje");
+        const recordEl      = document.getElementById("record");
+
+        // ---------- Constantes (juega con estos números) ----------
+        const COLUMNAS         = 20;
+        const FILAS            = 15;
+        const TAM              = canvas.width / COLUMNAS;  // tamaño de cada casilla en px (30)
+        const PASO_INICIAL     = 150;  // ms entre cada movimiento al empezar
+        const PASO_MINIMO      = 60;   // ms: lo más rápido que puede ir
+        const ACELERACION      = 5;    // ms que se restan al paso cada vez que come
+        const PUNTOS_POR_COMIDA = 10;
+
+        // Direcciones posibles
+        const DIRECCIONES = {
+            arriba:    { x: 0,  y: -1 },
+            abajo:     { x: 0,  y: 1 },
+            izquierda: { x: -1, y: 0 },
+            derecha:   { x: 1,  y: 0 }
+        };
+
+        // ---------- Estado del juego ----------
+        let jugando = false;
+        let serpiente = [];          // [{x, y}, ...] la posición 0 es la cabeza
+        let direccion = DIRECCIONES.derecha;
+        let colaDirecciones = [];    // giros pendientes (evita perder teclas rápidas)
+        let comida = { x: 0, y: 0 };
+        let puntaje = 0;
+        let record = 0;
+        let paso = PASO_INICIAL;
+        let tiempoAcumulado = 0;
+        let tiempoAnterior = 0;
+
+        // Con sesión el récord viene del servidor; como invitado se guarda en el navegador.
+        async function cargarRecordInicial() {
+            if (!sesionIniciada()) {
+                record = Number(leerRecord()) || 0;
+                mostrarRecord();
+                return;
+            }
+            try {
+                const datos = await apiFetch('/rankings/snake');
+                record = datos.mejorPuntaje || 0;
+            } catch (error) {
+                mostrarAlerta('No se pudo cargar tu récord: ' + error.message);
+            }
+            mostrarRecord();
+        }
+
+        // ---------- Controles ----------
+        const TECLAS = {
+            ArrowUp: "arriba", w: "arriba",
+            ArrowDown: "abajo", s: "abajo",
+            ArrowLeft: "izquierda", a: "izquierda",
+            ArrowRight: "derecha", d: "derecha"
+        };
+
+        document.addEventListener("keydown", (evento) => {
+            const nombre = TECLAS[evento.key] || TECLAS[evento.key.toLowerCase()];
+            if (nombre) {
+                evento.preventDefault();          // que las flechas no hagan scroll
+                cambiarDireccion(nombre);
+            } else if (evento.code === "Space" || evento.key === "Enter") {
+                evento.preventDefault();
+                if (!jugando) iniciar();
+            }
+        });
+
+        // Botones en pantalla
+        ["arriba", "abajo", "izquierda", "derecha"].forEach((nombre) => {
+            document.getElementById(nombre).addEventListener("click", () => {
+                if (!jugando) iniciar();
+                cambiarDireccion(nombre);
+            });
+        });
+
+        // Deslizar el dedo sobre el escenario (celular)
+        let toqueInicio = null;
+        juego.addEventListener("pointerdown", (evento) => {
+            toqueInicio = { x: evento.clientX, y: evento.clientY };
+        });
+        juego.addEventListener("pointerup", (evento) => {
+            if (!toqueInicio || !jugando) return;
+            const dx = evento.clientX - toqueInicio.x;
+            const dy = evento.clientY - toqueInicio.y;
+            toqueInicio = null;
+            if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;   // fue un toque, no un deslizamiento
+            if (Math.abs(dx) > Math.abs(dy)) cambiarDireccion(dx > 0 ? "derecha" : "izquierda");
+            else cambiarDireccion(dy > 0 ? "abajo" : "arriba");
+        });
+
+        boton.addEventListener("click", iniciar);
+
+        // ---------- Funciones del juego ----------
+        function iniciar() {
+            // La serpiente empieza con 3 casillas a la mitad del tablero, mirando a la derecha
+            const centroY = Math.floor(FILAS / 2);
+            serpiente = [
+                { x: 5, y: centroY },
+                { x: 4, y: centroY },
+                { x: 3, y: centroY }
+            ];
+            direccion = DIRECCIONES.derecha;
+            colaDirecciones = [];
+            puntaje = 0;
+            paso = PASO_INICIAL;
+            tiempoAcumulado = 0;
+            colocarComida();
+            puntajeEl.textContent = formatear(puntaje);
+
+            jugando = true;
+            mensaje.classList.add("oculto");
+            boton.blur();
+
+            tiempoAnterior = performance.now();
+            requestAnimationFrame(cicloDeJuego);
+        }
+
+        function cambiarDireccion(nombre) {
+            if (!jugando) return;
+            const nueva = DIRECCIONES[nombre];
+            // Comparamos contra el último giro pendiente (o la dirección actual)
+            const ultima = colaDirecciones.length ? colaDirecciones[colaDirecciones.length - 1] : direccion;
+            // No se puede dar media vuelta (te comerías a ti mismo) ni repetir la misma dirección
+            const esOpuesta = nueva.x === -ultima.x && nueva.y === -ultima.y;
+            if (esOpuesta || nueva === ultima) return;
+            if (colaDirecciones.length < 3) colaDirecciones.push(nueva);
+        }
+
+        // Pone la comida en una casilla al azar que no esté ocupada por la serpiente
+        function colocarComida() {
+            const libres = [];
+            for (let x = 0; x < COLUMNAS; x++) {
+                for (let y = 0; y < FILAS; y++) {
+                    if (!serpiente.some((parte) => parte.x === x && parte.y === y)) {
+                        libres.push({ x, y });
+                    }
+                }
+            }
+            comida = libres[Math.floor(Math.random() * libres.length)];
+        }
+
+        async function terminar() {
+            jugando = false;
+            dibujar();
+
+            titulo.textContent = "GAME OVER";
+            boton.textContent = "Reintentar";
+            instrucciones.textContent = `Puntaje: ${puntaje}. Guardando resultado...`;
+            mensaje.classList.remove("oculto");
+
+            if (!sesionIniciada()) {
+                if (puntaje > record) {
+                    record = puntaje;
+                    guardarRecord(record);
+                    mostrarRecord();
+                }
+                instrucciones.textContent = `Puntaje final: ${puntaje} pts. Inicia sesión para aparecer en las clasificaciones.`;
+                return;
+            }
+
+            try {
+                const res = await apiFetch('/rankings', {
+                    method: 'POST',
+                    body: JSON.stringify({ juegoId: 'snake', puntuacion: puntaje })
+                });
+                record = res.mejorPuntaje;
+                mostrarRecord();
+                instrucciones.textContent = res.nuevoRecord
+                    ? `¡Nuevo récord: ${puntaje} pts! Puesto #${res.posicionActual} en la clasificación.`
+                    : `Puntaje: ${puntaje} pts · Puesto actual: #${res.posicionActual}`;
+            } catch (error) {
+                instrucciones.textContent = `Puntaje final: ${puntaje} pts`;
+                mostrarAlerta('No se pudo guardar tu puntuación: ' + error.message);
+            }
+        }
+
+        // ---------- GAME LOOP ----------
+        // requestAnimationFrame corre ~60 veces por segundo, pero la serpiente solo
+        // avanza una casilla cada "paso" ms. Acumulamos el tiempo hasta completar un paso.
+        function cicloDeJuego(tiempoActual) {
+            if (!jugando) return;
+
+            tiempoAcumulado += tiempoActual - tiempoAnterior;
+            tiempoAnterior = tiempoActual;
+
+            while (tiempoAcumulado >= paso && jugando) {
+                tiempoAcumulado -= paso;
+                avanzar();
+            }
+
+            if (!jugando) return;   // avanzar() pudo terminar el juego
+            dibujar();
+            requestAnimationFrame(cicloDeJuego);
+        }
+
+        function avanzar() {
+            // 1) Aplicamos el siguiente giro pendiente
+            if (colaDirecciones.length) direccion = colaDirecciones.shift();
+
+            // 2) Calculamos dónde quedaría la cabeza
+            const cabeza = serpiente[0];
+            const nuevaCabeza = { x: cabeza.x + direccion.x, y: cabeza.y + direccion.y };
+
+            // 3) ¿Chocó con una pared?
+            const fueraDelTablero =
+                nuevaCabeza.x < 0 || nuevaCabeza.x >= COLUMNAS ||
+                nuevaCabeza.y < 0 || nuevaCabeza.y >= FILAS;
+
+            // 4) ¿Va a comer? Si no come, la cola se mueve y esa casilla queda libre
+            const come = nuevaCabeza.x === comida.x && nuevaCabeza.y === comida.y;
+            const cuerpo = come ? serpiente : serpiente.slice(0, -1);
+            const chocaConsigo = cuerpo.some((parte) => parte.x === nuevaCabeza.x && parte.y === nuevaCabeza.y);
+
+            if (fueraDelTablero || chocaConsigo) {
+                terminar();
+                return;
+            }
+
+            // 5) Movemos: agregamos la nueva cabeza y quitamos la cola (si no comió)
+            serpiente.unshift(nuevaCabeza);
+            if (come) {
+                const puntajeAntes = puntaje;
+                puntaje += PUNTOS_POR_COMIDA;
+                paso = Math.max(PASO_MINIMO, paso - ACELERACION);   // cada vez más rápido
+                puntajeEl.textContent = formatear(puntaje);
+
+                // Cada 100 puntos el marcador parpadea
+                if (Math.floor(puntaje / 100) > Math.floor(puntajeAntes / 100)) {
+                    puntajeEl.classList.remove("parpadeo");
+                    void puntajeEl.offsetWidth;        // truco para reiniciar una animación CSS
+                    puntajeEl.classList.add("parpadeo");
+                }
+
+                if (serpiente.length === COLUMNAS * FILAS) {   // llenó el tablero: ganó
+                    terminar();
+                    return;
+                }
+                colocarComida();
+            } else {
+                serpiente.pop();
+            }
+        }
+
+        // ---------- Dibujo ----------
+        function dibujar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Cuadrícula tenue para ver las casillas
+            ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+            for (let x = 0; x <= COLUMNAS; x++) {
+                ctx.beginPath(); ctx.moveTo(x * TAM, 0); ctx.lineTo(x * TAM, canvas.height); ctx.stroke();
+            }
+            for (let y = 0; y <= FILAS; y++) {
+                ctx.beginPath(); ctx.moveTo(0, y * TAM); ctx.lineTo(canvas.width, y * TAM); ctx.stroke();
+            }
+
+            // Comida
+            dibujarImagen(imgComida, comida.x, comida.y, "#ef4444");
+
+            // Cuerpo (de la cola hacia la cabeza para que la cabeza quede encima)
+            for (let i = serpiente.length - 1; i > 0; i--) {
+                const parte = serpiente[i];
+                ctx.fillStyle = i % 2 ? "#9361ff" : "#7c4dff";
+                ctx.beginPath();
+                ctx.roundRect(parte.x * TAM + 2, parte.y * TAM + 2, TAM - 4, TAM - 4, 6);
+                ctx.fill();
+            }
+
+            // Cabeza: la imagen del gato, volteada si va a la izquierda
+            const cabeza = serpiente[0];
+            if (cabeza) {
+                ctx.save();
+                if (direccion === DIRECCIONES.izquierda) {
+                    ctx.translate((cabeza.x * 2 + 1) * TAM, 0);
+                    ctx.scale(-1, 1);
+                }
+                dibujarImagen(imgCabeza, cabeza.x, cabeza.y, "#facc15", 1.3);
+                ctx.restore();
+            }
+        }
+
+        // Dibuja una imagen en una casilla. Si la imagen no cargó, dibuja un cuadro de color.
+        function dibujarImagen(imagen, x, y, colorRespaldo, escala = 1) {
+            const tam = TAM * escala;
+            const px = x * TAM + (TAM - tam) / 2;
+            const py = y * TAM + (TAM - tam) / 2;
+            if (imagen.complete && imagen.naturalWidth > 0) {
+                ctx.drawImage(imagen, px, py, tam, tam);
+            } else {
+                ctx.fillStyle = colorRespaldo;
+                ctx.beginPath();
+                ctx.roundRect(x * TAM + 3, y * TAM + 3, TAM - 6, TAM - 6, 8);
+                ctx.fill();
+            }
+        }
+
+        // ---------- Utilidades ----------
+        function formatear(n) {
+            return String(Math.floor(n)).padStart(5, "0");   // 42 -> "00042"
+        }
+
+        function mostrarRecord() {
+            recordEl.textContent = formatear(record);
+        }
+
+        // localStorage guarda el récord en el navegador aunque cierres la página
+        function leerRecord() {
+            try { return localStorage.getItem("recordSnake"); } catch { return 0; }
+        }
+
+        function guardarRecord(valor) {
+            try { localStorage.setItem("recordSnake", valor); } catch { /* sin almacenamiento */ }
+        }
+
+        // Dibujamos el tablero vacío detrás de la pantalla de inicio
+        serpiente = [];
+        colocarComida();
+        dibujar();
+        cargarRecordInicial();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
