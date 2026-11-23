@@ -1,5 +1,6 @@
 const db = require('../database/db');
 const JuegoModel = require('./juegoModel');
+const PerfilModel = require('./perfilModel');
 
 function formatearFechaActual() {
     return new Date().toLocaleDateString('es-MX', {
@@ -17,11 +18,12 @@ const RankingModel = {
         const registros = db.puntuaciones
             .filter((item) => item.juegoId === juegoId)
             .map((item) => {
+                const usuario = PerfilModel.obtenerPorId(item.usuarioId);
                 const esUsuarioActual = item.usuarioId === db.perfil.id;
                 return {
                     usuarioId: item.usuarioId,
-                    nombre: esUsuarioActual ? db.perfil.nombre : item.nombre,
-                    avatar: esUsuarioActual ? db.perfil.avatar : item.avatar,
+                    nombre: usuario ? usuario.nombre : 'Jugador',
+                    avatar: usuario ? usuario.avatar : 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png',
                     puntuacion: item.puntuacion,
                     fecha: item.fecha,
                     esUsuarioActual
@@ -30,6 +32,7 @@ const RankingModel = {
             .sort((a, b) => b.puntuacion - a.puntuacion)
             .map((item, indice) => ({
                 posicion: indice + 1,
+                usuarioId: item.usuarioId,
                 avatar: item.avatar,
                 nombre: item.nombre,
                 puntuacion: item.puntuacion,
@@ -64,8 +67,6 @@ const RankingModel = {
             db.puntuaciones.push({
                 juegoId,
                 usuarioId: db.perfil.id,
-                nombre: db.perfil.nombre,
-                avatar: db.perfil.avatar,
                 puntuacion: puntajeNumerico,
                 fecha: fechaHoy
             });

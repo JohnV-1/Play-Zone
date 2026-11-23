@@ -35,24 +35,54 @@ const db = {
         avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png'
     },
     favoritosIds: ['gato'],
+    usuarios: [
+        {
+            id: 2,
+            nombre: 'Nova',
+            descripcion: 'Cazador de récords en juegos arcade y plataformas.',
+            avatar: 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png',
+            favoritosIds: ['gato', 'atrapa']
+        },
+        {
+            id: 3,
+            nombre: 'Luna',
+            descripcion: 'Especialista en reflejos rápidos y estrellas fugaces.',
+            avatar: 'https://cdn-icons-png.flaticon.com/512/4140/4140047.png',
+            favoritosIds: ['atrapa', 'esquiva']
+        },
+        {
+            id: 4,
+            nombre: 'RetroMax',
+            descripcion: 'Fanático de los clásicos arcade de los 80 y 90.',
+            avatar: 'https://cdn-icons-png.flaticon.com/512/4140/4140037.png',
+            favoritosIds: ['gato', 'esquiva']
+        },
+        {
+            id: 5,
+            nombre: 'Astro',
+            descripcion: 'Explorando cada minijuego de Play Zone.',
+            avatar: 'https://cdn-icons-png.flaticon.com/512/4140/4140051.png',
+            favoritosIds: ['esquiva']
+        }
+    ],
     puntuaciones: [
         // Gato Jump
-        { juegoId: 'gato', usuarioId: 2, nombre: 'Nova', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 420, fecha: '18 nov 2026' },
-        { juegoId: 'gato', usuarioId: 3, nombre: 'Luna', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 310, fecha: '19 nov 2026' },
-        { juegoId: 'gato', usuarioId: 1, nombre: 'David', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 250, fecha: '20 nov 2026' },
-        { juegoId: 'gato', usuarioId: 4, nombre: 'RetroMax', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 180, fecha: '21 nov 2026' },
+        { juegoId: 'gato', usuarioId: 2, puntuacion: 420, fecha: '18 nov 2026' },
+        { juegoId: 'gato', usuarioId: 3, puntuacion: 310, fecha: '19 nov 2026' },
+        { juegoId: 'gato', usuarioId: 1, puntuacion: 250, fecha: '20 nov 2026' },
+        { juegoId: 'gato', usuarioId: 4, puntuacion: 180, fecha: '21 nov 2026' },
 
         // Atrapa la estrella
-        { juegoId: 'atrapa', usuarioId: 3, nombre: 'Luna', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 240, fecha: '19 nov 2026' },
-        { juegoId: 'atrapa', usuarioId: 1, nombre: 'David', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 190, fecha: '20 nov 2026' },
-        { juegoId: 'atrapa', usuarioId: 5, nombre: 'Astro', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 150, fecha: '21 nov 2026' },
-        { juegoId: 'atrapa', usuarioId: 2, nombre: 'Nova', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 120, fecha: '21 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 3, puntuacion: 240, fecha: '19 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 1, puntuacion: 190, fecha: '20 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 5, puntuacion: 150, fecha: '21 nov 2026' },
+        { juegoId: 'atrapa', usuarioId: 2, puntuacion: 120, fecha: '21 nov 2026' },
 
         // Esquiva bloques
-        { juegoId: 'esquiva', usuarioId: 1, nombre: 'David', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 350, fecha: '20 nov 2026' },
-        { juegoId: 'esquiva', usuarioId: 4, nombre: 'RetroMax', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 290, fecha: '20 nov 2026' },
-        { juegoId: 'esquiva', usuarioId: 2, nombre: 'Nova', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 210, fecha: '21 nov 2026' },
-        { juegoId: 'esquiva', usuarioId: 5, nombre: 'Astro', avatar: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', puntuacion: 140, fecha: '22 nov 2026' }
+        { juegoId: 'esquiva', usuarioId: 1, puntuacion: 350, fecha: '20 nov 2026' },
+        { juegoId: 'esquiva', usuarioId: 4, puntuacion: 290, fecha: '20 nov 2026' },
+        { juegoId: 'esquiva', usuarioId: 2, puntuacion: 210, fecha: '21 nov 2026' },
+        { juegoId: 'esquiva', usuarioId: 5, puntuacion: 140, fecha: '22 nov 2026' }
     ]
 };
 

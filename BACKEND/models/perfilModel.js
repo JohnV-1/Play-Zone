@@ -1,8 +1,38 @@
 const db = require('../database/db');
+const JuegoModel = require('./juegoModel');
+
+function mapearFavoritos(ids) {
+    return (ids || [])
+        .map((juegoId) => JuegoModel.obtenerPorId(juegoId))
+        .filter(Boolean);
+}
 
 const PerfilModel = {
     obtener() {
-        return db.perfil;
+        return {
+            ...db.perfil,
+            esPropio: true,
+            favoritos: mapearFavoritos(db.favoritosIds)
+        };
+    },
+
+    obtenerPorId(id) {
+        const idNum = Number(id);
+        if (!idNum || idNum === db.perfil.id) {
+            return this.obtener();
+        }
+
+        const otroUsuario = db.usuarios.find((u) => u.id === idNum);
+        if (!otroUsuario) return null;
+
+        return {
+            id: otroUsuario.id,
+            nombre: otroUsuario.nombre,
+            descripcion: otroUsuario.descripcion,
+            avatar: otroUsuario.avatar,
+            esPropio: false,
+            favoritos: mapearFavoritos(otroUsuario.favoritosIds)
+        };
     },
 
     actualizar({ nombre, descripcion }) {
@@ -11,7 +41,7 @@ const PerfilModel = {
             nombre: nombre.trim(),
             descripcion: descripcion !== undefined ? descripcion.trim() : db.perfil.descripcion
         };
-        return db.perfil;
+        return this.obtener();
     },
 
     reiniciarCuenta() {

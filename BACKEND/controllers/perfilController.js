@@ -5,6 +5,14 @@ const PerfilController = {
         res.json(PerfilModel.obtener());
     },
 
+    obtenerPerfilPorId(req, res) {
+        const perfil = PerfilModel.obtenerPorId(req.params.id);
+        if (!perfil) {
+            return res.status(404).json({ ok: false, mensaje: 'Usuario no encontrado.' });
+        }
+        res.json(perfil);
+    },
+
     actualizarPerfil(req, res) {
         const { nombre, descripcion } = req.body;
         if (!nombre || nombre.trim().length < 3) {
